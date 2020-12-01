@@ -30,7 +30,7 @@
          "context": [""]
         }
         {"tag": "facts",
-         "patterns": ["Tell me some facts", "Facts", "I want to know facts"]
+         "patterns": ["Tell me some facts", "Facts", "I want to know facts"],
          "responses": [ "Sushruta was world's first surgeon",
                            "If a Polar Bear and a Grizzly Bear mate, their offspring is called a “Pizzy Bear”.",
                            "There were two AI chatbots created by Facebook to talk to each other, but they were shut down after they started communicating in a language they made for themselves",
