@@ -49,7 +49,7 @@ def text():
             print("Cia: ", end="")
             from langtranslate import text_translator
             text_translator()
-        elif 'Youtube video downloader' in request or 'Download a youtube video' in request or 'download a youtube video' in request or 'download a youtube video' in request:
+        elif 'YouTube' in request or 'Download' in request or 'youtube' in request or 'download a youtube video' in request:
             print('Cia: ',ytd())
         else:
             res = my_bot.get_response(text = request)
@@ -110,7 +110,7 @@ def audio():
             speech_translate()
             time.sleep(5)
             engine.runAndWait()
-        elif 'Youtube video downloader' in req2 or 'Download a youtube video' in req2 or 'download a youtube video' in req2 or 'download a youtube video' in req2: 
+        elif 'YouTube' in req2 or 'video download' in req2 or 'downloader' in req2 or 'Downloader' in req2: 
             engine.say(ytd())
             engine.runAndWait()            
         else:
