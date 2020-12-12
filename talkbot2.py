@@ -11,13 +11,17 @@ from chatterbot.trainers import ChatterBotCorpusTrainer
 
 def games():
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
-        gameip = int(input("What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"))
-        if gameip == 1:
-            from subprocess import call
-            call(["python", "stone_paper_scissors.py"])
-        else:
-            from subprocess import call
-            call(["python", "tic_tac_toe_mult.py"])
+    gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
+    print(gamemsg)
+    engine.say(gamemsg)
+    engine.runAndWait()
+    gameip = int(input())
+    if gameip == 1:
+        from subprocess import call
+        call(["python", "stone_paper_scissors.py"])
+    else:
+        from subprocess import call
+        call(["python", "tic_tac_toe_mult.py"])
 
 def ytd():
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
@@ -61,7 +65,8 @@ def audio():
     engine.say(namemsg)
     engine.runAndWait()
 
-    print("Speak something...")   
+    print("Speak something...")
+     
     with sr.Microphone() as source0:
         #r.adjust_for_ambient_noise(source, duration=0.2)
         name=r.listen(source0)
@@ -71,11 +76,13 @@ def audio():
             print("Your response: "+r.recognize_google(name))
         except:
             print("Sorry, I did not get that")
-    tmsg="Hey"+nm+"How can I help you ?"        
+    tmsg="Hey"+nm+"How can I help you ?"  
+    engine.say(tmsg)
+    engine.runAndWait()      
     while True:
-        engine.say(tmsg)
-        engine.runAndWait()
         print("Speak something...")
+        engine.say("Speak something...") 
+        engine.runAndWait() 
         with sr.Microphone() as source:
             #r.adjust_for_ambient_noise(source, duration=0.2)
             req=r.listen(source)
