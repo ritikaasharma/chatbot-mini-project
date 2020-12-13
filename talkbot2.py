@@ -11,10 +11,7 @@ from chatterbot.trainers import ChatterBotCorpusTrainer
 
 def games():
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
-    gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
-    print(gamemsg)
-    engine.say(gamemsg)
-    engine.runAndWait()
+    
     gameip = int(input())
     if gameip == 1:
         from subprocess import call
@@ -44,6 +41,8 @@ def text():
             from facts import facts_func
             print("Cia: ",facts_func())
         elif 'games' in request or 'Games' in request or 'game' in request: 
+            gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
+            print(gamemsg)
             print("Cia: ",games())
         elif 'Language' in request or 'language' in request or 'Translator' in request or 'translator' in request or 'Translate' in request or 'translate' in request:
             print("Cia: ", end="")
@@ -103,7 +102,10 @@ def audio():
             engine.say(facts_func())
             engine.runAndWait()
         elif 'games' in req2 or 'Games' in req2 or 'game' in req2:
-            engine.say(games())
+            gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
+            print(gamemsg)
+            engine.say(gamemsg)
+            games()
             engine.runAndWait()
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
             from langtranslate import speech_translate
