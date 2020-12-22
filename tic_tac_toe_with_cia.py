@@ -2,6 +2,19 @@ import turtle
 import math
 from tkinter import messagebox
 
+import MySQLdb
+
+## connecting to the database using 'connect()' method
+## it takes 3 required parameters 'host', 'user', 'passwd'
+db = MySQLdb.connect(
+    host = "localhost",
+    user = "root",
+    passwd = "",
+    database = "chatbotdb"
+)
+
+cursor = db.cursor()
+
 def drawBoard():
     for i in range(2):
         drawer.penup()
@@ -138,6 +151,8 @@ def addX(row, column):
 
     if checkWon("x"):
         messagebox.showinfo("Tic-Tac-Toe", "You won the game!")
+        query = "UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'You'"
+        cursor.execute(query)
         screen.update()
         deactivate()
 
@@ -145,6 +160,8 @@ def addX(row, column):
         addO()
         if checkWon("o"):
             messagebox.showinfo("Tic-Tac-Toe", "CIA won the game!")
+            query = "UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'"
+            cursor.execute(query)
             screen.update()
             deactivate()
 
@@ -203,3 +220,4 @@ for i in range(3):
 activate(functions)
 screen.listen()
 turtle.mainloop()
+db.commit()
