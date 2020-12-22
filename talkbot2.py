@@ -9,6 +9,21 @@ from chatterbot.trainers import ListTrainer
 from chatterbot.conversation import Statement
 from chatterbot.trainers import ChatterBotCorpusTrainer
 
+import MySQLdb
+
+db = MySQLdb.connect(
+    host = "localhost",
+    user = "root",
+    passwd = "",
+    database = "chatbotdb"
+)
+
+cursor = db.cursor()
+
+cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL, Stone_Paper_Scissors varchar(255) NOT NULL, Tic_Tac_Toe_Single varchar(255) NOT NULL, Tic_Tac_Toe_Multi varchar(255) NOT NULL, Frequency int NOT NULL)")
+
+# cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
+
 def games():
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
     
