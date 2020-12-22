@@ -14,7 +14,7 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "@rasgulla15",
+    passwd = "",
     database = "chatbotdb"
 )
 
