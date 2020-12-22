@@ -14,13 +14,13 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "",
+    passwd = "@rasgulla15",
     database = "chatbotdb"
 )
 
 cursor = db.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL, Stone_Paper_Scissors varchar(255) NOT NULL, Tic_Tac_Toe_Single varchar(255) NOT NULL, Tic_Tac_Toe_Multi varchar(255) NOT NULL, Frequency int NOT NULL)")
+cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL, Stone_Paper_Scissors int, Tic_Tac_Toe_Single int, Tic_Tac_Toe_Multi int, Frequency int NOT NULL)")
 
 # cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
 
