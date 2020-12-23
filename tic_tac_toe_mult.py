@@ -6,7 +6,7 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "tanmay1210",
+    passwd = "",
     database = "chatbotdb"
 )
 
@@ -16,9 +16,9 @@ if mode == 1:
     import tic_tac_toe_with_cia
     exec('tic_tac_toe_with_cia')
 else:
-    name1=input("What is your name Player 1 ?")
+    name1=input("What is your name Player 1 ? ")
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name1,name1))
-    name2=input("What is your name Player 1 ?")
+    name2=input("What is your name Player 2 ? ")
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name2,name2))
     root = Tk()
     root.title('Tic-Tac-Toe')
@@ -55,8 +55,8 @@ else:
 
     def check():
         winner = False
-        n1=name1+"is the winner !!"
-        n2=name2+"is the winner !!"
+        n1=name1+" is the winner !!"
+        n2=name2+" is the winner !!"
 
         if b1["text"] == "X" and b2["text"] == "X" and b3["text"] == "X":
             b1.config(bg="#00FF00")
