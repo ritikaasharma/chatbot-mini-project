@@ -14,13 +14,13 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "",
+    passwd = "tanmay1210",
     database = "chatbotdb"
 )
 
 cursor = db.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL, Stone_Paper_Scissors int, Tic_Tac_Toe_Single int, Tic_Tac_Toe_Multi int, Frequency int NOT NULL)")
+cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL UNIQUE, Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0)")
 
 # cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
 
@@ -45,6 +45,7 @@ def text():
     welmsg="Welcome, I am Cia!"
     print(welmsg)
     name = input("What is your name ?\n")
+    cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     while True:
         request = input(name + ': ')
         #req = req.upper()
@@ -90,6 +91,8 @@ def audio():
             print("Your response: "+r.recognize_google(name))
         except:
             print("Sorry, I did not get that")
+    
+    cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
     tmsg="Hey"+nm+"How can I help you ?"  
     engine.say(tmsg)
     engine.runAndWait()      
@@ -169,3 +172,5 @@ if __name__ == "__main__":
     
     if(inmode=="Audio" or inmode=="AUDIO" or inmode=="audio"):
         audio()
+
+    db.commit()    
