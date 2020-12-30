@@ -14,19 +14,19 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "tanmay1210",
+    passwd = "#root9694",
     database = "chatbotdb"
 )
-
 cursor = db.cursor()
 
 cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL UNIQUE, Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0)")
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) UNIQUE, Frequency int DEFAULT 0, History varchar(255), Time int DEFAULT 0, Date varchar(255))")
 
 # cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
 
 def games():
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
-    
+    #total_wins = 0
     gameip = int(input())
     if gameip == 1:
         from subprocess import call
@@ -44,8 +44,10 @@ def ytd():
 def text():
     welmsg="Welcome, I am Cia!"
     print(welmsg)
-    name = input("What is your name ?\n")
+    print("What is your name ?")
+    name = input()
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
+    cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     while True:
         request = input(name + ': ')
         #req = req.upper()
@@ -69,6 +71,7 @@ def text():
         else:
             res = my_bot.get_response(text = request)
             print("Cia:",res)
+            cursor.execute("INSERT into chathistory (History) VALUES(%s)", [res])
         
         
 
@@ -93,6 +96,7 @@ def audio():
             print("Sorry, I did not get that")
     
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+    cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
     tmsg="Hey"+nm+"How can I help you ?"  
     engine.say(tmsg)
     engine.runAndWait()      
@@ -173,4 +177,5 @@ if __name__ == "__main__":
     if(inmode=="Audio" or inmode=="AUDIO" or inmode=="audio"):
         audio()
 
-    db.commit()    
+    #cursor.execute("SELECT * FROM scoreboard ORDER BY Total_wins DESC")
+    db.commit()
