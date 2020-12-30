@@ -1,6 +1,7 @@
 import turtle
 import math
 from tkinter import messagebox
+#from talkbot2 import total_wins 
 
 import MySQLdb
 
@@ -9,11 +10,12 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "",
+    passwd = "#root9694",
     database = "chatbotdb"
 )
 
 cursor = db.cursor()
+player_t = input("Enter the name of player:")
 
 def drawBoard():
     for i in range(2):
@@ -36,7 +38,6 @@ def drawBoard():
             drawer.penup()
             drawer.goto(-290 + j * 200, 280 - i * 200)
             drawer.pendown()
-
             drawer.write(num, font = ("Arial",12))
             num += 1
 
@@ -151,19 +152,19 @@ def addX(row, column):
 
     if checkWon("x"):
         messagebox.showinfo("Tic-Tac-Toe", "You won the game!")
-        query = "UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'You'"
-        cursor.execute(query)
+        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name=%s",(player_t,))
         screen.update()
         deactivate()
+        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(player_t,))
 
     else:
         addO()
         if checkWon("o"):
             messagebox.showinfo("Tic-Tac-Toe", "CIA won the game!")
-            query = "UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'"
-            cursor.execute(query)
+            cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'")
             screen.update()
             deactivate()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name= 'Cia'")
 
         elif checkDraw():
             messagebox.showinfo("Tic-Tac-Toe", "It's a tie")
