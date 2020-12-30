@@ -1,17 +1,19 @@
 import random
 import MySQLdb
+#from talkbot2 import total_wins
 
 ## connecting to the database using 'connect()' method
 ## it takes 3 required parameters 'host', 'user', 'passwd'
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "",
+    passwd = "#root9694",
     database = "chatbotdb"
 )
 
 cursor = db.cursor()
-
+player = input("Enter the name of player:")
+cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(player,player))
 print ("\nRules for the game:\n1) Rock vs Scissor => Rock wins\n"+
 							  	"2) Rock vs Paper => Paper wins\n" +
 								"3) Scissor vs Paper => Scissor wins\n")
@@ -70,16 +72,16 @@ while i < n:
 	i = i + 1
 
 if (comp_count > user_count):
-	query = "UPDATE scoreboard SET Stone_Paper_Scissors = Stone_Paper_Scissors+1 WHERE Name = 'Cia'"
-	cursor.execute(query)
+	cursor.execute("UPDATE scoreboard SET Stone_Paper_Scissors = Stone_Paper_Scissors+1 WHERE Name = 'Cia'")
+	cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name= 'Cia'")
 	print ("\nCia won the game. Better luck next time!")
 elif (comp_count == user_count):
 	print ("It's a tie!")
 else:
-	query = "UPDATE scoreboard SET Stone_Paper_Scissors = Stone_Paper_Scissors+1 WHERE Name = 'You'"
-	cursor.execute(query)
-	print ("\nHurray!! You won!!")
-print("\nScore:\nCia: " + str(comp_count) + "\nYou: " + str(user_count))
+	cursor.execute("UPDATE scoreboard SET Stone_Paper_Scissors = Stone_Paper_Scissors+1 WHERE Name=%s",(player,))
+	cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(player,))
+	print ("\nHurray!!" +player+ "won!!")
+print("\nScore:\nCia: " + str(comp_count) + "\n" + player + ":" + str(user_count))
 
 print ("\nThanks for playing! I hope you had fun!")
 
