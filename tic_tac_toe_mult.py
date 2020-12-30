@@ -1,12 +1,15 @@
 from tkinter import *
 from tkinter import messagebox
+#from talkbot2 import total_wins
+
+
 
 import MySQLdb
 
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "",
+    passwd = "#root9694",
     database = "chatbotdb"
 )
 
@@ -66,6 +69,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b4["text"] == "X" and b5["text"] == "X" and b6["text"] == "X":
             b4.config(bg="#00FF00")
@@ -75,6 +79,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b7["text"] == "X" and b8["text"] == "X" and b9["text"] == "X":
             b7.config(bg="#00FF00")
@@ -84,6 +89,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b1["text"] == "X" and b4["text"] == "X" and b7["text"] == "X":
             b1.config(bg="#00FF00")
@@ -93,6 +99,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b2["text"] == "X" and b5["text"] == "X" and b8["text"] == "X":
             b2.config(bg="#00FF00")
@@ -102,6 +109,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b3["text"] == "X" and b6["text"] == "X" and b9["text"] == "X":
             b3.config(bg="#00FF00")
@@ -111,6 +119,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=?",(name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b3["text"] == "X" and b5["text"] == "X" and b7["text"] == "X":
             b3.config(bg="#00FF00")
@@ -120,6 +129,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
 
         elif b1["text"] == "X" and b5["text"] == "X" and b9["text"] == "X":
             b1.config(bg="#00FF00")
@@ -129,6 +139,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n1)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
     
         #player2's win-->
         elif b1["text"] == "O" and b2["text"] == "O" and b3["text"] == "O":
@@ -139,6 +150,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b4["text"] == "O" and b5["text"] == "O" and b6["text"] == "O":
             b4.config(bg="#00FF00")
@@ -148,6 +160,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b7["text"] == "O" and b8["text"] == "O" and b9["text"] == "O":
             b7.config(bg="#00FF00")
@@ -157,6 +170,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b1["text"] == "O" and b4["text"] == "O" and b7["text"] == "O":
             b1.config(bg="#00FF00")
@@ -166,6 +180,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b2["text"] == "O" and b5["text"] == "O" and b8["text"] == "O":
             b2.config(bg="#00FF00")
@@ -175,6 +190,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b3["text"] == "O" and b6["text"] == "O" and b9["text"] == "O":
             b3.config(bg="#00FF00")
@@ -184,6 +200,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b3["text"] == "O" and b5["text"] == "O" and b7["text"] == "O":
             b3.config(bg="#00FF00")
@@ -193,6 +210,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         elif b1["text"] == "O" and b5["text"] == "O" and b9["text"] == "O":
             b1.config(bg="#00FF00")
@@ -202,6 +220,7 @@ else:
             messagebox.showinfo("Tic-Tac-Toe",n2)
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
+            cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
 
         #tie-condition
         if count == 9 and winner == False:
