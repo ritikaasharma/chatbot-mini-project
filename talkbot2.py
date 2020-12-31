@@ -18,13 +18,13 @@ db = MySQLdb.connect(
     database = "chatbotdb"
 )
 cursor = db.cursor()
-
-cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) NOT NULL UNIQUE, Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0)")
-cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (No int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(255) UNIQUE, Frequency int DEFAULT 0, History varchar(255), Time int DEFAULT 0, Date varchar(255))")
-
+name_of_talkbot = "Cia"
+cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0)")
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) DEFAULT ' ', Frequency int DEFAULT 0, User varchar(255) DEFAULT ' ', Cia varchar(500) DEFAULT ' ', Date_and_Time timestamp DEFAULT current_timestamp)")
+cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name_of_talkbot,name_of_talkbot))
 # cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
 
-def games():
+def games(): 
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
     #total_wins = 0
     gameip = int(input())
@@ -44,24 +44,35 @@ def ytd():
 def text():
     welmsg="Welcome, I am Cia!"
     print(welmsg)
-    print("What is your name ?")
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg])
+    ask = "What is your name ?"
+    print(ask)
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[ask])
     name = input()
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     while True:
-        request = input(name + ': ')
+        req_inp = name + ': '
+        print(req_inp , end = "")
+        request = input()
         #req = req.upper()
-    
+        cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(request,name))
         if 'Bye' in request or 'bye' in request or 'BYE' in request:
-            print('Cia: Bye, have a great day!')
+            bye_msg = "Bye, have a great day!"
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(bye_msg,name))
+            print('Cia: ' + bye_msg)
             break
         elif 'Facts' in request or 'facts' in request or 'fact' in request or 'Fact' in request:
             from facts import facts_func
-            print("Cia: ",facts_func())
+            fact = facts_func()
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(fact,name))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            print("Cia: ",fact)
         elif 'games' in request or 'Games' in request or 'game' in request: 
             gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
             print(gamemsg)
             print("Cia: ",games())
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
         elif 'Language' in request or 'language' in request or 'Translator' in request or 'translator' in request or 'Translate' in request or 'translate' in request:
             print("Cia: ", end="")
             from langtranslate import text_translator
@@ -177,5 +188,6 @@ if __name__ == "__main__":
     if(inmode=="Audio" or inmode=="AUDIO" or inmode=="audio"):
         audio()
 
-    #cursor.execute("SELECT * FROM scoreboard ORDER BY Total_wins DESC")
+    cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
     db.commit()
+
