@@ -24,14 +24,17 @@ cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) DEFAUL
 cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name_of_talkbot,name_of_talkbot))
 # cursor.execute("CREATE TABLE users (name VARCHAR(255), user_name VARCHAR(255))")
 
+User_name = ''
+
 def games(): 
     #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
     #total_wins = 0
     gameip = int(input())
+    cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(gameip,))
     if gameip == 1:
         from subprocess import call
         call(["python", "stone_paper_scissors.py"])
-    else:
+    elif gameip == 2:
         from subprocess import call
         call(["python", "tic_tac_toe_mult.py"])
 
@@ -40,6 +43,9 @@ def ytd():
     from subprocess import call
     call(["python", "ytdownloader.py"])
 
+bye_msg = "Bye, have a great day!"
+gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
+gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe"
 
 def text():
     welmsg="Welcome, I am Cia!"
@@ -49,6 +55,7 @@ def text():
     print(ask)
     cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[ask])
     name = input()
+    User_name = name
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
     while True:
@@ -56,9 +63,8 @@ def text():
         print(req_inp , end = "")
         request = input()
         #req = req.upper()
-        cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(request,name))
+        cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(request,))
         if 'Bye' in request or 'bye' in request or 'BYE' in request:
-            bye_msg = "Bye, have a great day!"
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(bye_msg,name))
             print('Cia: ' + bye_msg)
             break
@@ -69,51 +75,63 @@ def text():
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             print("Cia: ",fact)
         elif 'games' in request or 'Games' in request or 'game' in request: 
-            gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(gamemsg_db,))
             print(gamemsg)
-            print("Cia: ",games())
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            print("Cia: ",games())
         elif 'Language' in request or 'language' in request or 'Translator' in request or 'translator' in request or 'Translate' in request or 'translate' in request:
             print("Cia: ", end="")
-            from langtranslate import text_translator
-            text_translator()
+            from subprocess import call
+            call(["python", "langtranslate.py"])
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
         elif 'YouTube' in request or 'Download' in request or 'youtube' in request or 'download a youtube video' in request:
             print('Cia: ',ytd())
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
         else:
             res = my_bot.get_response(text = request)
             print("Cia:",res)
-            cursor.execute("INSERT into chathistory (History) VALUES(%s)", [res])
+            cursor.execute("INSERT into chathistory (Cia) VALUES(%s)", [res])
         
         
 
 def audio():
     welmsg1 = "Welcome, I am Siya!"
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
     engine.say(welmsg1)
     engine.runAndWait()
 
     engine.say(namemsg)
     engine.runAndWait()
 
-    print("Speak something...")
+    speak_msg = "Speak something..."
+    print(speak_msg)
      
     with sr.Microphone() as source0:
         #r.adjust_for_ambient_noise(source, duration=0.2)
         name=r.listen(source0)
         nm=r.recognize_google(name)
+        User_name = nm
+        cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+        cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
         try:
             # using google speech recognition
-            print("Your response: "+r.recognize_google(name))
+            ask_db = "Your response: "
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
+            print(ask_db +r.recognize_google(name))
         except:
-            print("Sorry, I did not get that")
+            sry_msg = "Sorry, I did not get that"
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
+            print(sry_msg)
     
-    cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
-    cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+    help_db = "Hey how can I help you ?"
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[help_db,nm])
     tmsg="Hey"+nm+"How can I help you ?"  
     engine.say(tmsg)
     engine.runAndWait()      
     while True:
         print("Speak something...")
-        engine.say("Speak something...") 
+        engine.say("Speak something...")
+        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[speak_msg,nm]) 
         engine.runAndWait() 
         with sr.Microphone() as source:
             #r.adjust_for_ambient_noise(source, duration=0.2)
@@ -121,37 +139,47 @@ def audio():
             req2=r.recognize_google(req)
             try:
                 # using google speech recognition
-                print("Your response: "+r.recognize_google(req))
+                print(ask_db + r.recognize_google(req))
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
             except:
-                print("Sorry, I did not get that")
+                print(sry_msg)
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
         
         if 'Bye' in req2 or 'bye' in req2 or 'BYE' in req2:
-            byemsg = 'Bye, have a great day!'
-            engine.say(byemsg)
+            engine.say(bye_msg)
             engine.runAndWait()
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[bye_msg,nm])
             exit()
         elif  'Facts' in req2 or 'facts' in req2 or 'fact' in req2 or 'Fact' in req2 :
             from facts import facts_func
-            engine.say(facts_func())
+            fact = facts_func()
+            engine.say(fact)
             engine.runAndWait()
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(fact,nm))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
         elif 'games' in req2 or 'Games' in req2 or 'game' in req2:
-            gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
             print(gamemsg)
             engine.say(gamemsg)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)  ON DUPLICATE KEY UPDATE Name=%s",(gamemsg_db,nm))
             games()
             engine.runAndWait()
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
-            from langtranslate import speech_translate
-            speech_translate()
+            from subprocess import call
+            call(["python", "langtranslate.py"])
             time.sleep(5)
             engine.runAndWait()
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
         elif 'YouTube' in req2 or 'video download' in req2 or 'downloader' in req2 or 'Downloader' in req2: 
             engine.say(ytd())
             engine.runAndWait()            
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
         else:
             res = my_bot.get_response(text = req2)
             engine.say(res)
             engine.runAndWait()
+            cursor.execute("INSERT into chathistory (Cia) VALUES(%s) ON DUPLICATE KEY UPDATE Name=%s", [res])
+
 
 if __name__ == "__main__":
 
@@ -188,6 +216,7 @@ if __name__ == "__main__":
     if(inmode=="Audio" or inmode=="AUDIO" or inmode=="audio"):
         audio()
 
-    cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
+    #cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
     db.commit()
+
 
