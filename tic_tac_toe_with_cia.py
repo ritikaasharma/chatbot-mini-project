@@ -2,6 +2,7 @@ import turtle
 import math
 from tkinter import messagebox
 #from talkbot2 import total_wins 
+from talkbot2 import User_name
 
 import MySQLdb
 
@@ -15,7 +16,15 @@ db = MySQLdb.connect(
 )
 
 cursor = db.cursor()
-player_t = input("Enter the name of player:")
+taken_msg = "That spot is taken!"
+user_won = "You won the game!"
+cia_won = "CIA won the game!"
+tie_msg = "It's a tie"
+#name_msg = "Enter the name of player:"
+#User_name = input(name_msg)
+cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(User_name,User_name))
+cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(User_name,User_name))
+#cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name_msg,User_name))
 
 def drawBoard():
     for i in range(2):
@@ -145,6 +154,8 @@ def addX(row, column):
     if board[row][column] == "x" or board[row][column] == "o":
         messagebox.showinfo("Tic-Tac-Toe", "That spot is taken!")
         screen.update()
+        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(taken_msg,User_name))
+
     else:
         drawX(-200 + 200 * column , 200 - 200 * row)
         #add on comp's board
@@ -152,15 +163,17 @@ def addX(row, column):
 
     if checkWon("x"):
         messagebox.showinfo("Tic-Tac-Toe", "You won the game!")
-        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name=%s",(player_t,))
+        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(user_won,User_name))
+        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name=%s",(User_name,))
         screen.update()
         deactivate()
-        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(player_t,))
+        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(User_name,))
 
     else:
         addO()
         if checkWon("o"):
             messagebox.showinfo("Tic-Tac-Toe", "CIA won the game!")
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(cia_won,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'")
             screen.update()
             deactivate()
@@ -168,6 +181,7 @@ def addX(row, column):
 
         elif checkDraw():
             messagebox.showinfo("Tic-Tac-Toe", "It's a tie")
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(tie_msg,User_name))
             screen.update()
             deactivate()
 
