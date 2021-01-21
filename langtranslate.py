@@ -9,48 +9,41 @@ import os
 
 import MySQLdb
 
-## connecting to the database using 'connect()' method
-## it takes 3 required parameters 'host', 'user', 'passwd'
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
     passwd = "#root9694",
     database = "chatbotdb"
 )
-
+select_msg = "Select a source and target language (enter codes)"
+source_db = "Source: "
+dest_db = "Destination: "
+choice_db = "Enter your input: "
 cursor = db.cursor()
-
-languages = {"English": 'en', "French": 'fr', 
-                 "Spanish": 'es', "German": 'de', "Italian": 'it', 
-                 "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
-                 "Chinese(traditional)": 'zh-tw', "Arabic": 'ar', "Japanese": 'ja', "Urdu": 'ur'}
-print("Language", " : ", "Code") 
-for x in languages: 
-    print(x, " : ", languages[x])
+    
 
 def text_translator():
     translator = Translator()
     
-    select_msg = "Select a source and target language (enter codes)"
     print(select_msg) 
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(select_msg,User_name))
-    source_db = "Source: "
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(source_db,User_name))
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(select_msg,))
+    
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(source_db,))
     user_lang = input("\nSource:")
-    cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(user_lang,User_name))
-    dest_db = "Destination: "
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(dest_db,User_name))
+    cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_lang,))
+    
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(dest_db,))
     op_lang = input("Destination:")
-    cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(op_lang,User_name))
-    choice_db = "Enter your input: "
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(choice_db,User_name))
+    cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(op_lang,))
+    
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(choice_db,))
     user_ip = input("Enter your input:")
-    cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(user_ip,User_name))
+    cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_ip,))
 
     result = translator.translate(user_ip , src=user_lang, dest=op_lang)
-    #result_db = result.text
-    #op_lang_db = "Your sentence in selected language is:"
-    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s,%s) ON DUPLICATE KEY UPDATE Name=%s",(op_lang_db,result_db,User_name))
+    op_lang_db = "Your sentence in selected language is:"
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(result.text.encode("utf-8"),))
     print("Your sentence in",op_lang,"is:",result.text)
 
 
@@ -150,10 +143,21 @@ def speech_translate():
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req_err_db,User_name))
             print("Unable to provide Required Output".format(e)) 
 
-inmode_ = input("Interactive mode : Audio/Text ? ")
 
-if(inmode_=="Text" or inmode_ == "TEXT" or inmode_=="text"):
-    text_translator()
-    
-if(inmode_=="Audio" or inmode_=="AUDIO" or inmode_=="audio"):
-    speech_translate()
+if __name__ == "__main__":
+    languages = {"English": 'en', "French": 'fr', 
+                    "Spanish": 'es', "German": 'de', "Italian": 'it', 
+                    "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
+                    "Chinese(traditional)": 'zh-tw', "Arabic": 'ar', "Japanese": 'ja', "Urdu": 'ur'}
+    print("Language", " : ", "Code") 
+    for x in languages: 
+        print(x, " : ", languages[x])
+    inmode_ = input("Interactive mode : Audio/Text ? ")
+
+    if(inmode_=="Text" or inmode_ == "TEXT" or inmode_=="text"):
+        text_translator()
+        
+    if(inmode_=="Audio" or inmode_=="AUDIO" or inmode_=="audio"):
+        speech_translate()
+
+db.commit()
