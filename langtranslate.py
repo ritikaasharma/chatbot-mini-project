@@ -9,20 +9,27 @@ import os
 
 import MySQLdb
 
-db = MySQLdb.connect(
+'''db = MySQLdb.connect(
     host = "localhost",
     user = "root",
     passwd = "#root9694",
     database = "chatbotdb"
-)
+)'''
 select_msg = "Select a source and target language (enter codes)"
 source_db = "Source: "
 dest_db = "Destination: "
 choice_db = "Enter your input: "
-cursor = db.cursor()
+#cursor = db.cursor()
     
 
-def text_translator():
+def text_translator(cursor):
+    languages = {"English": 'en', "French": 'fr', 
+                    "Spanish": 'es', "German": 'de', "Italian": 'it', 
+                    "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
+                    "Chinese(traditional)": 'zh-tw', "Arabic": 'ar', "Japanese": 'ja', "Urdu": 'ur'}
+    print("Language", " : ", "Code") 
+    for x in languages: 
+        print(x, " : ", languages[x])
     translator = Translator()
     
     print(select_msg) 
@@ -47,7 +54,14 @@ def text_translator():
     print("Your sentence in",op_lang,"is:",result.text)
 
 
-def speech_translate():
+def speech_translate(cursor):
+    languages = {"English": 'en', "French": 'fr', 
+                    "Spanish": 'es', "German": 'de', "Italian": 'it', 
+                    "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
+                    "Chinese(traditional)": 'zh-tw', "Arabic": 'ar', "Japanese": 'ja', "Urdu": 'ur'}
+    print("Language", " : ", "Code") 
+    for x in languages: 
+        print(x, " : ", languages[x])
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[1].id)
@@ -144,20 +158,14 @@ def speech_translate():
             print("Unable to provide Required Output".format(e)) 
 
 
-if __name__ == "__main__":
-    languages = {"English": 'en', "French": 'fr', 
-                    "Spanish": 'es', "German": 'de', "Italian": 'it', 
-                    "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
-                    "Chinese(traditional)": 'zh-tw', "Arabic": 'ar', "Japanese": 'ja', "Urdu": 'ur'}
-    print("Language", " : ", "Code") 
-    for x in languages: 
-        print(x, " : ", languages[x])
-    inmode_ = input("Interactive mode : Audio/Text ? ")
+# if __name__ == "__main__":
+    
+#     inmode_ = input("Interactive mode : Audio/Text ? ")
 
-    if(inmode_=="Text" or inmode_ == "TEXT" or inmode_=="text"):
-        text_translator()
+#     if(inmode_=="Text" or inmode_ == "TEXT" or inmode_=="text"):
+#         text_translator()
         
-    if(inmode_=="Audio" or inmode_=="AUDIO" or inmode_=="audio"):
-        speech_translate()
+#     if(inmode_=="Audio" or inmode_=="AUDIO" or inmode_=="audio"):
+#         speech_translate()
 
-db.commit()
+#db.commit()
