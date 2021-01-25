@@ -1,5 +1,4 @@
 import random
-import pymysql
 #from talkbot2 import total_wins
 # from talkbot2 import User_name
 from talkbot2 import cursor, db, User_name
