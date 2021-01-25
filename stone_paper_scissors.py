@@ -5,16 +5,8 @@ import pymysql
 from talkbot2 import cursor, db, User_name
 ## connecting to the database using 'connect()' method
 ## it takes 3 required parameters 'host', 'user', 'passwd'
-"""db = pymysql.connect(
-    "localhost",
-    "root",
-    "#root9694",
-    "chatbotdb"
-)"""
 
-def spsm(cr):
-	cursor = cr
-	# cursor = db.cursor()
+def spsm(cursor):
 	name_msg = "Enter the name of player:"
 	player = input(name_msg)
 	cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name_msg,player))
