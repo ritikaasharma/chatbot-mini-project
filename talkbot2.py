@@ -1,27 +1,23 @@
 import logging
 import time
-import pyttsx3
 
 import speech_recognition as sr
 import pyttsx3
 
-from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer
-from chatterbot.conversation import Statement
-from chatterbot.trainers import ChatterBotCorpusTrainer
-import pymysql
+import json
+import random
+import re 
+# from chatterbot import ChatBot
+# from chatterbot.trainers import ListTrainer
+# from chatterbot.conversation import Statement
+# from chatterbot.trainers import ChatterBotCorpusTrainer
+# import pymysql
 import MySQLdb
 
-'''db = pymysql.connect(
-    "localhost",
-    "root",
-    "#root9694",
-    "chatbotdb"
-)'''
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "#root9694",
+    passwd = "@rasgulla15",
     database = "chatbotdb"
     )
 
@@ -35,15 +31,28 @@ cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) DEFAUL
 
 User_name = ''
 
+def chat(req):
+
+    f = open ('intents.json', "r") 
+    
+    # Reading from file 
+    data = json.loads(f.read())
+    req = re.sub(r'[^\w\s]', '', req).capitalize().rstrip() # to ignore punctuations and capitalising input string
+
+    for intents in data['intents']:
+        if req in intents['patterns']:
+            res = intents['responses']
+        
+    return (random.choice(res))
+
+
 def games(): 
-    #if ans == 'yes' or ans == 'Yes' or ans == 'YES':
-    #total_wins = 0
+    
     gameip = int(input())
     cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(gameip,))
+    
     if gameip == 1:
-        # from subprocess import call
-        # call(["python", "sps3.py"])
-        from sps3 import spsm
+        from stone_paper_scissors import spsm
         spsm(cursor)
     elif gameip == 2:
         from tic_tac_toe_mult import ttcm
@@ -72,7 +81,7 @@ def text():
         request = input()
         #req = req.upper()
         cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(request,))
-        if 'Bye' in request or 'bye' in request or 'BYE' in request:
+        if 'Bye' in request:
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(bye_msg,name))
             print('Cia: ' + bye_msg)
             break
@@ -89,20 +98,21 @@ def text():
             print("Cia: "+ gamemsg)
             games()
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+
         elif 'Language' in request or 'language' in request or 'Translator' in request or 'translator' in request or 'Translate' in request or 'translate' in request:
             print("Cia: ")
-            # from subprocess import call
-            # call(["python","langtranslate.py"])
             from langtranslate import text_translator
             text_translator(cursor)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+
         elif 'YouTube' in request or 'Download' in request or 'youtube' in request or 'download a youtube video' in request:
             from ytdownloader import ytfunc
             print("Cia: ",end="")
             ytfunc(cursor)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+
         else:
-            res = my_bot.get_response(request)
+            res = chat(request)
             print("Cia: "+ res)
             cursor.execute("INSERT into chathistory (Cia) VALUES(%s)", [res])
     cursor.close()#newly added
@@ -168,14 +178,7 @@ def audio():
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[bye_msg,nm])
             print('Cia: ' + bye_msg + nm)
             exit()
-        elif  'Facts' in req2 or 'facts' in req2 or 'fact' in req2 or 'Fact' in req2 :
-            from facts import facts_func
-            fact = facts_func()
-            engine.say(fact)
-            engine.runAndWait()
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(fact,nm))
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
-            print("Cia: ",fact + nm)
+        
         elif 'games' in req2 or 'Games' in req2 or 'game' in req2:
             gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe"
             gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
@@ -185,6 +188,7 @@ def audio():
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)  ON DUPLICATE KEY UPDATE Name=%s",(gamemsg_db,nm))
             games()
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
+
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
             # from subprocess import call
             # call(["python", "langtranslate.py"])
@@ -193,14 +197,16 @@ def audio():
             time.sleep(5)
             engine.runAndWait()
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
+
         elif 'YouTube' in req2 or 'video download' in req2 or 'downloader' in req2 or 'Downloader' in req2: 
             from ytdownloader import ytfunc
             print("Cia: ")
             engine.say(ytfunc(cursor))
             engine.runAndWait()            
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
+
         else:
-            res = my_bot.get_response(text = req2)
+            res = chat(req2)
             engine.say(res)
             engine.runAndWait()
             cursor.execute("INSERT into chathistory (Cia) VALUES(%s) ON DUPLICATE KEY UPDATE Name=%s", [res])
@@ -208,30 +214,13 @@ def audio():
 
 if __name__ == "__main__":
 
-    logger = logging.getLogger()
-    logger.setLevel(logging.CRITICAL)
-
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[1].id)
 
     r=sr.Recognizer()
 
-    #read_only=True : used to disable chatbots ability to learn after the training
-    #chatterbot.logic.MathematicalEvaluation : helps to solve maths problems
-    #chatterbot.logic.BestMatch : used to choose best match from the list of responses
-    my_bot = ChatBot(name = 'PyBot', read_only = True, logic_adapters = ['chatterbot.logic.MathematicalEvaluation',
-                                                                            'chatterbot.logic.BestMatch']) 
-    trainer = ChatterBotCorpusTrainer(my_bot)
-
-
-    trainer.train("chatterbot.corpus.english")
-
     inmode = input("Interactive mode : Audio/Text ? ")
-
-    #cur.execute("INSERT INTO cbdata (Name) VALUES (%s)", (name))
-    #db.commit()
-    #db.close()
 
     namemsg="What is your name ?"
 
