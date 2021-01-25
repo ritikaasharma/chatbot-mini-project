@@ -17,7 +17,7 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "@rasgulla15",
+    passwd = "#root9694",
     database = "chatbotdb"
     )
 
@@ -55,8 +55,8 @@ def games():
         from stone_paper_scissors import spsm
         spsm(cursor)
     elif gameip == 2:
-        from tic_tac_toe_mult import ttcm
-        ttcm(cursor)
+        from subprocess import call
+        call(["python", "tic_tac_toe_mult.py"])
 
 
 bye_msg = "Bye, have a great day!"
@@ -81,7 +81,7 @@ def text():
         request = input()
         #req = req.upper()
         cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(request,))
-        if 'Bye' in request:
+        if 'Bye' in request or 'BYE' in request or 'bye' in request:
             cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(bye_msg,name))
             print('Cia: ' + bye_msg)
             break
