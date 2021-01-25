@@ -2,21 +2,9 @@ from tkinter import *
 from tkinter import messagebox
 from talkbot2 import User_name
 #from talkbot2 import total_wins
-
-
-
-import MySQLdb
-
-db = MySQLdb.connect(
-    host = "localhost",
-    user = "root",
-    passwd = "#root9694",
-    database = "chatbotdb"
-)
-
+from talkbot2 import cursor 
 end_msg = "Thanks for playing! I hope you had fun!"
 
-cursor = db.cursor()
 mode = int(input("Single-player(1) or Multi-player(2) ?\n"))
 if mode == 1:
     import tic_tac_toe_with_cia
@@ -304,4 +292,3 @@ else:
     options.add_command(label="Exit",command=root.quit)
     reset()
     root.mainloop()
-    db.commit()
