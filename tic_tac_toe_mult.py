@@ -7,13 +7,15 @@ end_msg = "Thanks for playing! I hope you had fun!"
 
 mode = int(input("Single-player(1) or Multi-player(2) ?\n"))
 if mode == 1:
-    import tic_tac_toe_with_cia
-    exec('tic_tac_toe_with_cia')
+    from tic_tac_toe_with_cia import ttcwc
+    ttcwc(cursor)
 else:
     name1=input("What is your name Player 1 ? ")
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name1,name1))
+    cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name1,name1))
     name2=input("What is your name Player 2 ? ")
     cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name2,name2))
+    cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name2,name2))
     root = Tk()
     root.title('Tic-Tac-Toe')
 
@@ -58,6 +60,7 @@ else:
             b3.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -70,6 +73,7 @@ else:
             b6.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -82,6 +86,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -94,6 +99,7 @@ else:
             b7.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -106,6 +112,7 @@ else:
             b8.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -118,6 +125,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=?",(name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -130,6 +138,7 @@ else:
             b7.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -142,6 +151,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n1)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n1,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
@@ -155,6 +165,7 @@ else:
             b3.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -167,6 +178,7 @@ else:
             b6.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -179,6 +191,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -191,6 +204,7 @@ else:
             b7.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -203,6 +217,7 @@ else:
             b8.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -215,6 +230,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -227,6 +243,7 @@ else:
             b7.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
@@ -239,6 +256,7 @@ else:
             b9.config(bg="#00FF00")
             winner = True
             messagebox.showinfo("Tic-Tac-Toe",n2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(n2,User_name))
             cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
             disable_all_buttons()
             cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
