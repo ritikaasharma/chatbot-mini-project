@@ -10,14 +10,17 @@ name2 = ''
 def tttm(cursor):
         #function and GUI to accept names of players
         def names():   
+            
             top = Toplevel()
             top.title("Names")
             top.geometry("400x300")
             top.resizable(width=FALSE, height=FALSE)
             def name1_func():
+                global name1
                 name1 = EntryBox1.get("1.0", 'end-1c').strip()
                 EntryBox1.delete("0.0", END)
             def name2_func():
+                global name2
                 name2 = EntryBox2.get("1.0", 'end-1c').strip()
                 EntryBox2.delete("0.0", END)
             EntryBox1 = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
