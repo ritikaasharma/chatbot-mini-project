@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import simpledialog
 #from trial2 import User_name,receive
 #from talkbot2 import total_wins
 #from talkbot2 import cursor 
@@ -9,45 +10,49 @@ name1 = ''
 name2 = ''
 def tttm(cursor):
         #function and GUI to accept names of players
-        def names():   
+        # def names():   
             
-            top = Toplevel()
-            top.title("Names")
-            top.geometry("400x300")
-            top.resizable(width=FALSE, height=FALSE)
-            def name1_func():
-                global name1
-                name1 = EntryBox1.get("1.0", 'end-1c').strip()
-                EntryBox1.delete("0.0", END)
-            def name2_func():
-                global name2
-                name2 = EntryBox2.get("1.0", 'end-1c').strip()
-                EntryBox2.delete("0.0", END)
-            EntryBox1 = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
-            EntryBox2 = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
-            name1Button = Button(top, font=("Verdana",12,'bold'), text="P1", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-                    command= name1_func)
-            name2Button = Button(top, font=("Verdana",12,'bold'), text="P2", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-                    command= name2_func)
-            destButton = Button(top, font=("Verdana",12,'bold'), text="Submit", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-                    command= top.destroy)
-            EntryBox1.place(x=15,y = 50, height=50, width=250)
-            EntryBox2.place(x=15,y = 150,height=50, width=250)
-            name1Button.place(x=267,y = 50, height=50, width=70)
-            name2Button.place(x=267,y = 150, height=50, width=70)
-            destButton.place(x= 45, y = 250, height=30, width=120)
-            top.mainloop()
-
+        #     top = Toplevel()
+        #     top.title("Names")
+        #     top.geometry("400x300")
+        #     top.resizable(width=FALSE, height=FALSE)
+        #     def name1_func():
+        #         global name1
+        #         name1 = EntryBox1.get("1.0", 'end-1c').strip()
+        #         EntryBox1.delete("0.0", END)
+        #     def name2_func():
+        #         global name2
+        #         name2 = EntryBox2.get("1.0", 'end-1c').strip()
+        #         EntryBox2.delete("0.0", END)
+        #     EntryBox1 = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
+        #     EntryBox2 = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
+        #     name1Button = Button(top, font=("Verdana",12,'bold'), text="P1", width="12", height=5,
+        #             bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+        #             command= name1_func)
+        #     name2Button = Button(top, font=("Verdana",12,'bold'), text="P2", width="12", height=5,
+        #             bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+        #             command= name2_func)
+        #     destButton = Button(top, font=("Verdana",12,'bold'), text="Submit", width="12", height=5,
+        #             bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+        #             command= top.destroy)
+        #     EntryBox1.place(x=15,y = 50, height=50, width=250)
+        #     EntryBox2.place(x=15,y = 150,height=50, width=250)
+        #     name1Button.place(x=267,y = 50, height=50, width=70)
+        #     name2Button.place(x=267,y = 150, height=50, width=70)
+        #     destButton.place(x= 45, y = 250, height=30, width=120)
+        #     top.mainloop()
+        top = Toplevel()
+        top.title('Tic-Tac-Toe')
+        global name1
+        name1 = simpledialog.askstring("Input", "What is first player's name?",parent=top)
+        global name2
+        name2 = simpledialog.askstring("Input", "What is second player's name?",parent=top)
         end_msg = "Thanks for playing! I hope you had fun!"
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name1,name1))
         cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name1,name1))
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name2,name2))
         cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name2,name2))
-        top = Toplevel()
-        top.title('Tic-Tac-Toe')
+        
         
 
         b1 = Button(top , text = " ", font=("Geneva", 20), height = 3 , width = 6 , bg ="SystemButtonFace", command=lambda: click(b1))
@@ -79,8 +84,8 @@ def tttm(cursor):
 
         def check():
             winner = False
-            n1=name1+" is the winner !!"
-            n2=name2+" is the winner !!"
+            n1=name1+" is the winner !!. Thanks for playing! I hope you had fun!"
+            n2=name2+" is the winner !!. Thanks for playing! I hope you had fun!"
 
             if b1["text"] == "X" and b2["text"] == "X" and b3["text"] == "X":
                 b1.config(bg="#00FF00")
@@ -92,7 +97,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b4["text"] == "X" and b5["text"] == "X" and b6["text"] == "X":
@@ -105,7 +109,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
             
             elif b7["text"] == "X" and b8["text"] == "X" and b9["text"] == "X":
@@ -118,7 +121,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s", (name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b1["text"] == "X" and b4["text"] == "X" and b7["text"] == "X":
@@ -131,7 +133,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b2["text"] == "X" and b5["text"] == "X" and b8["text"] == "X":
@@ -144,7 +145,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b3["text"] == "X" and b6["text"] == "X" and b9["text"] == "X":
@@ -157,7 +157,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=?",(name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b3["text"] == "X" and b5["text"] == "X" and b7["text"] == "X":
@@ -170,7 +169,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b1["text"] == "X" and b5["text"] == "X" and b9["text"] == "X":
@@ -183,7 +181,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name1,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name1,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             #player2's win-->
@@ -197,7 +194,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b4["text"] == "O" and b5["text"] == "O" and b6["text"] == "O":
@@ -210,7 +206,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b7["text"] == "O" and b8["text"] == "O" and b9["text"] == "O":
@@ -223,7 +218,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b1["text"] == "O" and b4["text"] == "O" and b7["text"] == "O":
@@ -236,7 +230,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b2["text"] == "O" and b5["text"] == "O" and b8["text"] == "O":
@@ -249,7 +242,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b3["text"] == "O" and b6["text"] == "O" and b9["text"] == "O":
@@ -262,7 +254,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b3["text"] == "O" and b5["text"] == "O" and b7["text"] == "O":
@@ -275,7 +266,6 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             elif b1["text"] == "O" and b5["text"] == "O" and b9["text"] == "O":
@@ -288,14 +278,12 @@ def tttm(cursor):
                 cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Multi = Tic_Tac_Toe_Multi + 1 WHERE Name=%s",(name2,))
                 disable_all_buttons()
                 cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name2,))
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
             #tie-condition
             if count == 9 and winner == False:
                 messagebox.showinfo("Tic-Tac-Toe", "It's a Tie ! \nNo one wins.")
                 disable_all_buttons()
-                print ("\n" + end_msg)
                 cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(end_msg,))
 
         def disable_all_buttons():
@@ -313,7 +301,6 @@ def tttm(cursor):
         def reset():
             #from subprocess import call
             #call(["python", "names"])
-            names()
             selected = True
             count = 0
             n3="The game has started "+name1+" is first."
