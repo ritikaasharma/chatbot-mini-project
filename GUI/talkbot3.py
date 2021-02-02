@@ -113,6 +113,7 @@ def receive(response):
     ChatLog.config(state=DISABLED)
     #ChatLog.insert(END, '\n ', "right")
     ChatLog.yview(END)
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(response,))
 
 #Creating tkinter object
 base = Tk()
@@ -166,23 +167,31 @@ def chat(req):
     return (random.choice(res))
 
 def tic_tac_toe_mult():
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('3')")
     from tic_tac_toe_mult2 import tttm
     tttm(cursor)
 
 def tic_tac_toe_with_cia():
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('2')")
     from tic_tac_toe_with_cia2 import ttcwc
-    ttcwc(cursor)
+    flag = ttcwc(cursor)
+    if flag:
+        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name=%s",(name,))
+        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name,))
+    cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'")
+    cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name= 'Cia'")
+
 
 def stone_paper_scissors():
+    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('1')")
     from stone_paper_scissors2 import spsm
     spsm(cursor)
 
 def games(): 
     gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe-With-Cia\n3. Tic-Tac-Toe-Mult"
     gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe 3. Tic-Tac-Toe-Mult" 
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(gamemsg_db,))
     #print("Cia: "+ gamemsg)
-    receive(gamemsg)
+    receive(gamemsg_db)
     top = Toplevel()
     top.title("Game-Menu")
     SendButton = Button(top, font=("Verdana",12,'bold'), text="1", width="12", height=5,
@@ -200,6 +209,7 @@ bye_msg = "Bye, have a great day!"
 now = datetime.now()
 current_time = now.strftime("%D - %H:%M \n")
 name = ''
+flag = False
 
 # def text(msg):
     
