@@ -94,6 +94,8 @@ def send():
         else:
             response = chat(msg)
             receive(response)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+            
 
 def audiobuttonfunc():
     engine.say("Speak something...")
@@ -140,9 +142,11 @@ def audiobuttonfunc():
             
         else:
             res = chat(req2)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
             engine.say(res)
             engine.runAndWait()
             receive(req2)
+            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
 
     ChatLog.config(state=NORMAL)
     ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
