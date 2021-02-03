@@ -10,6 +10,7 @@ import re
 import tkinter
 from tkinter import *
 from datetime import datetime
+from tkinter import simpledialog
 import textwrap
 import MySQLdb
 
@@ -26,6 +27,7 @@ name_of_talkbot = "Cia"
 cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0)")
 cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) DEFAULT ' ', Frequency int DEFAULT 0, User varchar(255) DEFAULT ' ', Cia varchar(500) DEFAULT ' ', Date_and_Time timestamp DEFAULT current_timestamp)")
 
+yt_flag = False
 
 def send():
     msg = EntryBox.get("1.0", 'end-1c').strip()
@@ -74,9 +76,21 @@ def send():
 
         elif 'YouTube' in msg or 'Download' in msg or 'youtube' in msg or 'download a youtube video' in msg:
             from ytdownloader2 import ytfunc
-            print("Cia: ",end="")
-            ytfunc(cursor)
+            #print("Cia: ",end="")
+            err_msg = "Error: Progressive Stream Unavailable"
+            link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
+            quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            global yt_flag
+            yt_flag = ytfunc(cursor,link,name,vd)
+            if yt_flag:
+                dc_db = "Download Completed !"
+                receive(dc_db)
+                return
+            receive(err_msg)
+            
         else:
             response = chat(msg)
             receive(response)
@@ -223,12 +237,49 @@ flag = False
         
 
 def audio():
+    # base = Tk()
+    # base.title("Hello")
+    # base.geometry("400x500")
+    # base.resizable(width=FALSE, height=FALSE)
+
+    # #Create Chat window
+    # ChatLog = Text(base, bd=0, bg="white", height="8", width="50", font="Arial",)
+
+    # #ChatLog.config(state=DISABLED)
+
+    # #Bind scrollbar to Chat window
+    # scrollbar = Scrollbar(base, command=ChatLog.yview)
+    # ChatLog['yscrollcommand'] = scrollbar.set
+
+    # #Create Button to send message
+    # SendButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
+    #                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+    #                     command= send)
+
+    # # AcceptButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
+    # #                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+    # #                     command= accept)
+
+    # #Create the box to enter message
+    # EntryBox = Text(base, bd=0, bg="white",width="29", height="5", font="Arial")
+    # #EntryBox.bind("<Return>", send)
+
+
+    # #Place all components on the screen
+    # scrollbar.place(x=376,y=6, height=386)
+    # ChatLog.place(x=6,y=6, height=436, width=370)
+    # EntryBox.place(x=6, y=451, height=50, width=250)
+    # SendButton.place(x=262, y=451, height=50, width = 70)
+
     welmsg1 = "Welcome, I am Siya!"      
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
     engine.say(welmsg1)
+    receive(welmsg)
     engine.runAndWait()
 
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
     engine.say(namemsg)
+    receive(namemsg)
     engine.runAndWait()
 
     speak_msg = "Speak something..."
@@ -241,6 +292,7 @@ def audio():
         User_name = nm
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
         cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+        receive(nm)
         try:
             # using google speech recognition
             ask_db = "Your response: "
