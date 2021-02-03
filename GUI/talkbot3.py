@@ -79,8 +79,13 @@ def send():
             #print("Cia: ",end="")
             err_msg = "Error: Progressive Stream Unavailable"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
+            link_db = "Enter the link of video to be downloaded: "
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(link_db,name))
+            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(link,name))    
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            select_quality = "Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(select_quality,name))
+            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
@@ -90,6 +95,7 @@ def send():
                 receive(dc_db)
                 return
             receive(err_msg)
+            return
             
         else:
             response = chat(msg)
@@ -373,7 +379,7 @@ if __name__ == "__main__":
     r=sr.Recognizer()
 
     inmode = input("Interactive mode : Audio/Text ? ")
-    #to accept name fromuser in the first run.
+    #to accept name from user in the first run.
 
     # ask = "What is your name ?"
     # print(ask)
