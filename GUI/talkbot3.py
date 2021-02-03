@@ -17,7 +17,7 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "#root9694",
+    passwd = "@rasgulla15",
     database = "chatbotdb"
     )
 
@@ -79,13 +79,8 @@ def send():
             #print("Cia: ",end="")
             err_msg = "Error: Progressive Stream Unavailable"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
-            link_db = "Enter the link of video to be downloaded: "
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(link_db,name))
-            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(link,name))    
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            select_quality = "Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(select_quality,name))
-            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
@@ -95,20 +90,99 @@ def send():
                 receive(dc_db)
                 return
             receive(err_msg)
-            return
             
         else:
             response = chat(msg)
             receive(response)
-    #msg
 
-        # response = "Welcome, I am Cia!"
-        # ChatLog.insert(END, current_time+' ', ("small", "greycolour", "left"))
-        # ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
-        # wraplength=200, font=("Arial", 10, "bold"), bg="lightgreen", bd=4, justify="left"))
-        # ChatLog.insert(END, '\n ', "right")
-        # ChatLog.config(state=DISABLED)
-        # ChatLog.yview(END)
+def audiobuttonfunc():
+    engine.say("Speak something...")
+        # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[speak_msg,nm]) 
+    engine.runAndWait() 
+    with sr.Microphone() as source:
+            #r.adjust_for_ambient_noise(source, duration=0.2)
+        req=r.listen(source)
+        req2=r.recognize_google(req)
+        # try:
+        #     ask_db = "Your response: "
+        #         # using google speech recognition
+        #     receive(ask_db + r.recognize_google(req))
+        #         # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
+        # except:
+        #     sry_msg = "Sorry, I did not get that"
+        #     receive(sry_msg)
+        if 'games' in req2 or 'Games' in req2 or 'game' in req2:
+            games()
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+
+        elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
+            print("Cia: ")
+            from langtranslate2 import text_translator
+            text_translator(cursor)
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+
+        elif 'YouTube' in req2 or 'Download' in req2 or 'youtube' in req2 or 'download a youtube video' in req2:
+            from ytdownloader2 import ytfunc
+            #print("Cia: ",end="")
+            err_msg = "Error: Progressive Stream Unavailable"
+            link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
+            quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            vd=int(quality)
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            global yt_flag
+            yt_flag = ytfunc(cursor,link,name,vd)
+            if yt_flag:
+                dc_db = "Download Completed !"
+                receive(dc_db)
+                return
+            receive(err_msg)
+            
+        else:
+            res = chat(req2)
+            engine.say(res)
+            engine.runAndWait()
+            receive(req2)
+
+    ChatLog.config(state=NORMAL)
+    ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+    ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=res, 
+    wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+    ChatLog.insert(END,'\n ', "left")
+    ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+    ChatLog.yview(END)
+
+    
+    
+def audio():
+    speak_msg = "Speak something..."
+    receive(speak_msg)
+    
+     
+    with sr.Microphone() as source0:
+        #r.adjust_for_ambient_noise(source, duration=0.2)
+        name=r.listen(source0)
+        nm=r.recognize_google(name)
+        User_name = nm
+        # cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+        # cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+        # try:
+        #     # using google speech recognition
+        #     ask_db = "Your response: "
+        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
+        #     receive(ask_db +r.recognize_google(name))
+        # except:
+        #     sry_msg = "Sorry, I did not get that"
+        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
+        #     receive(sry_msg)
+    
+    help_db = "Hey how can I help you ?"
+    # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[help_db,nm])
+    tmsg="Hey"+nm+"How can I help you ?"  
+    engine.say(tmsg)
+    receive(tmsg)
+    engine.runAndWait() 
+         
 
 def accept():
     msg = EntryBox.get("1.0", 'end-1c').strip()
@@ -140,7 +214,7 @@ base = Tk()
 base.title("Hello")
 base.geometry("400x500")
 base.resizable(width=FALSE, height=FALSE)
-
+base.bind('<Return>', send)
 #Create Chat window
 ChatLog = Text(base, bd=0, bg="white", height="8", width="50", font="Arial",)
 
@@ -155,9 +229,12 @@ SendButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", h
                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
                     command= send)
 
-# AcceptButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
-#                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-#                     command= accept)
+# display of audio button
+photo = PhotoImage(file = r"E:\mini project\Gui files\favicon-32x32.png") 
+AudioButton = Button(base, font=("Verdana",12,'bold'),
+                    bd=0, fg='#ffffff', image = photo,
+                    command = audiobuttonfunc)
+
 
 #Create the box to enter message
 EntryBox = Text(base, bd=0, bg="white",width="29", height="5", font="Arial")
@@ -169,12 +246,12 @@ scrollbar.place(x=376,y=6, height=386)
 ChatLog.place(x=6,y=6, height=436, width=370)
 EntryBox.place(x=6, y=451, height=50, width=250)
 SendButton.place(x=262, y=451, height=50, width = 70)
-# AcceptButton.place(x=334, y=451, height=50, width = 70)
+AudioButton.place(x=332, y=451, height=50, width = 50)
 
 
 def chat(req):
 
-    f = open ('intents.json', "r") 
+    f = open ('E:\mini project\Gui files\intents.json', "r") 
     
     # Reading from file 
     data = json.loads(f.read())
@@ -182,9 +259,14 @@ def chat(req):
 
     for intents in data['intents']:
         if req in intents['patterns']:
+            if intents['tag'] == 'bye':
+                res = intents['responses']
+                response = random.choice(res)
+                exit()
             res = intents['responses']
+            response = random.choice(res)
         
-    return (random.choice(res))
+    return response
 
 def tic_tac_toe_mult():
     cursor.execute("INSERT INTO chathistory (Cia) VALUES ('3')")
@@ -230,146 +312,7 @@ now = datetime.now()
 current_time = now.strftime("%D - %H:%M \n")
 name = ''
 flag = False
-
-# def text(msg):
-    
-
-#         else:
-#             res = chat(msg)
-#             #print("Cia: "+ res)
-#             receive(res)
-#             #send(res)
-#             cursor.execute("INSERT into chathistory (Cia) VALUES(%s)", [res])
         
-
-def audio():
-    # base = Tk()
-    # base.title("Hello")
-    # base.geometry("400x500")
-    # base.resizable(width=FALSE, height=FALSE)
-
-    # #Create Chat window
-    # ChatLog = Text(base, bd=0, bg="white", height="8", width="50", font="Arial",)
-
-    # #ChatLog.config(state=DISABLED)
-
-    # #Bind scrollbar to Chat window
-    # scrollbar = Scrollbar(base, command=ChatLog.yview)
-    # ChatLog['yscrollcommand'] = scrollbar.set
-
-    # #Create Button to send message
-    # SendButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
-    #                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-    #                     command= send)
-
-    # # AcceptButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
-    # #                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-    # #                     command= accept)
-
-    # #Create the box to enter message
-    # EntryBox = Text(base, bd=0, bg="white",width="29", height="5", font="Arial")
-    # #EntryBox.bind("<Return>", send)
-
-
-    # #Place all components on the screen
-    # scrollbar.place(x=376,y=6, height=386)
-    # ChatLog.place(x=6,y=6, height=436, width=370)
-    # EntryBox.place(x=6, y=451, height=50, width=250)
-    # SendButton.place(x=262, y=451, height=50, width = 70)
-
-    welmsg1 = "Welcome, I am Siya!"      
-    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
-    engine.say(welmsg1)
-    receive(welmsg)
-    engine.runAndWait()
-
-    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
-    engine.say(namemsg)
-    receive(namemsg)
-    engine.runAndWait()
-
-    speak_msg = "Speak something..."
-    print(speak_msg)
-     
-    with sr.Microphone() as source0:
-        #r.adjust_for_ambient_noise(source, duration=0.2)
-        name=r.listen(source0)
-        nm=r.recognize_google(name)
-        User_name = nm
-        cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
-        cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
-        receive(nm)
-        try:
-            # using google speech recognition
-            ask_db = "Your response: "
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
-            print(ask_db +r.recognize_google(name))
-        except:
-            sry_msg = "Sorry, I did not get that"
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
-            print(sry_msg)
-    
-    help_db = "Hey how can I help you ?"
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[help_db,nm])
-    tmsg="Hey"+nm+"How can I help you ?"  
-    engine.say(tmsg)
-    engine.runAndWait()      
-    while True:
-        print("Speak something...")
-        engine.say("Speak something...")
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[speak_msg,nm]) 
-        engine.runAndWait() 
-        with sr.Microphone() as source:
-            #r.adjust_for_ambient_noise(source, duration=0.2)
-            req=r.listen(source)
-            req2=r.recognize_google(req)
-            try:
-                # using google speech recognition
-                print(ask_db + r.recognize_google(req))
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
-            except:
-                print(sry_msg)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
-        
-        if 'Bye' in req2 or 'bye' in req2 or 'BYE' in req2:
-            engine.say(bye_msg)
-            engine.runAndWait()
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[bye_msg,nm])
-            print('Cia: ' + bye_msg + nm)
-            exit()
-        
-        elif 'games' in req2 or 'Games' in req2 or 'game' in req2:
-            gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe"
-            gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe\n"
-            print(gamemsg)
-            engine.say(gamemsg)
-            engine.runAndWait()
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)  ON DUPLICATE KEY UPDATE Name=%s",(gamemsg_db,nm))
-            games()
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
-
-        elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
-            # from subprocess import call
-            # call(["python", "langtranslate.py"])
-            from langtranslate import speech_translate
-            speech_translate(cursor)
-            time.sleep(5)
-            engine.runAndWait()
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
-
-        elif 'YouTube' in req2 or 'video download' in req2 or 'downloader' in req2 or 'Downloader' in req2: 
-            from ytdownloader import ytfunc
-            print("Cia: ")
-            engine.say(ytfunc(cursor))
-            engine.runAndWait()            
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(nm,))
-
-        else:
-            res = chat(req2)
-            engine.say(res)
-            engine.runAndWait()
-            cursor.execute("INSERT into chathistory (Cia) VALUES(%s) ON DUPLICATE KEY UPDATE Name=%s", (res,nm))
-
 if __name__ == "__main__":
 
     engine = pyttsx3.init()
@@ -379,7 +322,7 @@ if __name__ == "__main__":
     r=sr.Recognizer()
 
     inmode = input("Interactive mode : Audio/Text ? ")
-    #to accept name from user in the first run.
+    #to accept name fromuser in the first run.
 
     # ask = "What is your name ?"
     # print(ask)
@@ -399,6 +342,17 @@ if __name__ == "__main__":
     #     text()
     
     if(inmode=="Audio" or inmode=="AUDIO" or inmode=="audio"):
+        r=sr.Recognizer()      
+        # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
+        engine.say("Welcome, I am Siya!")
+        receive("Welcome, I am Cia!")
+        engine.runAndWait()
+        
+
+        namemsg = "What is your name ?"
+        engine.say(namemsg)
+        receive(namemsg)
+        engine.runAndWait()
         audio()
 
     #cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
