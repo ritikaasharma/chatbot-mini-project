@@ -142,7 +142,7 @@ def audiobuttonfunc():
             
         else:
             res = chat(req2)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
             engine.say(res)
             engine.runAndWait()
             receive(req2)
