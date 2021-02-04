@@ -92,9 +92,16 @@ def send():
             receive(err_msg)
             
         else:
+            bye_responses = ["Bye", "Have a great day", "See you soon", "Take care", "See you"]
             response = chat(msg)
-            receive(response)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+            if response in bye_responses:
+                receive(response)
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                exit()
+            else:
+                receive(response)
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+
             
 
 def audiobuttonfunc():
@@ -141,12 +148,22 @@ def audiobuttonfunc():
             receive(err_msg)
             
         else:
+            bye_responses = ["Bye", "Have a great day", "See you soon", "Take care", "See you"]
             res = chat(req2)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
-            engine.say(res)
-            engine.runAndWait()
-            receive(req2)
-            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+            if res in bye_responses:
+                engine.say(res)
+                engine.runAndWait()
+                receive(req2)
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                exit()
+            else:
+                engine.say(res)
+                engine.runAndWait()
+                receive(req2)
+                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+            
 
     ChatLog.config(state=NORMAL)
     ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
@@ -263,12 +280,7 @@ def chat(req):
 
     for intents in data['intents']:
         if req in intents['patterns']:
-            if intents['tag'] == 'bye':
-                res = intents['responses']
-                response = random.choice(res)
-                exit()
-            res = intents['responses']
-            response = random.choice(res)
+            response = random.choice(intents['responses'])
         
     return response
 
