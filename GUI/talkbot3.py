@@ -70,8 +70,8 @@ def send():
 
         elif 'Language' in msg or 'language' in msg or 'Translator' in msg or 'translator' in msg or 'Translate' in msg or 'translate' in msg:
             print("Cia: ")
-            from langtranslate2 import text_translator
-            text_translator(cursor)
+            from langtranslate2 import lang_translate
+            lang_translate(cursor)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
 
         elif 'YouTube' in msg or 'Download' in msg or 'youtube' in msg or 'download a youtube video' in msg:
@@ -125,9 +125,9 @@ def audiobuttonfunc():
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
 
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
-            print("Cia: ")
-            from langtranslate2 import text_translator
-            text_translator(cursor)
+            #print("Cia: ")
+            from langtranslate2 import lang_translate
+            lang_translate(cursor)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
 
         elif 'YouTube' in req2 or 'Download' in req2 or 'youtube' in req2 or 'download a youtube video' in req2:
@@ -351,8 +351,8 @@ if __name__ == "__main__":
     #print(welmsg)
     receive(welmsg)
     receive(namemsg)
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg])
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
+    # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg])
+    # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
 
     # if(inmode=="Text" or inmode == "TEXT" or inmode=="text"):
     #     text()
