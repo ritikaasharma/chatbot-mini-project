@@ -25,7 +25,7 @@ cursor = db.cursor()
 db.autocommit(True)
 name_of_talkbot = "Cia"
 cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0)")
-cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, History varchar(13000) DEFAULT ' ')")
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, History varchar(13000) DEFAULT '')")
 Ciastr = ""
 yt_flag = False
 
@@ -104,7 +104,7 @@ def send():
                 Ciastr+=bspace+"Cia: "+response+'\n'
                 #Ciastr.rjust(15)
                 # cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
-                cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))  
+                cursor.execute("UPDATE chathistory SET History=CONCAT(History, %s) WHERE Name=%s",(Ciastr,name))  
                 exit()
             else:
                 receive(response)
@@ -385,8 +385,7 @@ if __name__ == "__main__":
     welmsg="Welcome, I am Cia!"
     #print(welmsg)
     receive(welmsg)
-    #Ciastr+=bspace+welmsg+'\n'
-    #Ciastr+=bspace+namemsg+'\n'
+    Ciastr += "Cia: " + welmsg + "\n" + bspace + "Cia: " + namemsg + "\n"
     receive(namemsg)
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg])
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
@@ -406,7 +405,7 @@ if __name__ == "__main__":
         engine.say(namemsg)
         receive(namemsg)
         engine.runAndWait()
-        cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
+        # cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
         audio()
 
     #cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
