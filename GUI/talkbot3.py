@@ -17,16 +17,16 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "tanmay1210",
+    passwd = "@rasgulla15",
     database = "chatbotdb"
     )
-bspace="                                            "
+bspace="               "
 cursor = db.cursor()
 db.autocommit(True)
 name_of_talkbot = "Cia"
 cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0)")
-cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, Cia varchar(13000) DEFAULT ' ')")
-Ciastr=""
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, History varchar(13000) DEFAULT ' ')")
+Ciastr = ""
 yt_flag = False
 
 def send():
@@ -46,7 +46,7 @@ def send():
         ChatLog.yview(END)
         name = msg
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
-        #cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+        cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
         count+= 1
         return
     #elif msg == ''
@@ -103,8 +103,8 @@ def send():
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
                 Ciastr+=bspace+"Cia: "+response+'\n'
                 #Ciastr.rjust(15)
-                cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
-                cursor.execute("UPDATE chathistory SET Cia=CONCAT(Cia, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))  
+                # cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))  
                 exit()
             else:
                 receive(response)
@@ -172,8 +172,8 @@ def audiobuttonfunc():
                 #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
                 Ciastr+=bspace+"You: "+req2+'\n'
                 #Ciastr.rjust(15)
-                cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
-                cursor.execute("UPDATE chathistory SET Cia=CONCAT(Cia, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
+                # cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
                 exit()
             else:
                 engine.say(res)
@@ -206,7 +206,7 @@ def audio():
         #r.adjust_for_ambient_noise(source, duration=0.2)
         name=r.listen(source0)
         nm=r.recognize_google(name)
-        User_name = nm
+        # User_name = nm
         # cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
         # cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
         # try:
@@ -222,8 +222,10 @@ def audio():
     help_db = "Hey how can I help you ?"
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[help_db,nm])
     tmsg="Hey"+nm+"How can I help you ?"  
+    Ciastr = "Cia: " + tmsg + "\n"
     engine.say(tmsg)
     receive(tmsg)
+    cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,nm))
     engine.runAndWait() 
          
 
@@ -357,7 +359,7 @@ def games():
                     command= tic_tac_toe_mult).pack()
     top.mainloop()
 
-bye_msg = "Bye, have a great day!"
+# bye_msg = "Bye, have a great day!"
 now = datetime.now()
 current_time = now.strftime("%D - %H:%M \n")
 name = ''
@@ -396,14 +398,15 @@ if __name__ == "__main__":
         r=sr.Recognizer()      
         # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg1])
         engine.say("Welcome, I am Siya!")
-        receive("Welcome, I am Cia!")
+        receive(welmsg)
         engine.runAndWait()
-        
 
-        namemsg = "What is your name ?"
+        Ciastr += "Cia: " + welmsg + "\n" + namemsg + "\n"
+        
         engine.say(namemsg)
         receive(namemsg)
         engine.runAndWait()
+        cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
         audio()
 
     #cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
