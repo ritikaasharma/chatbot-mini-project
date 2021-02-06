@@ -17,23 +17,25 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "@rasgulla15",
+    passwd = "tanmay1210",
     database = "chatbotdb"
     )
-
+bspace="                                            "
 cursor = db.cursor()
 db.autocommit(True)
 name_of_talkbot = "Cia"
 cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0)")
-cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) DEFAULT ' ', Frequency int DEFAULT 0, User varchar(255) DEFAULT ' ', Cia varchar(500) DEFAULT ' ', Date_and_Time timestamp DEFAULT current_timestamp)")
-
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, Cia varchar(13000) DEFAULT ' ')")
+Ciastr=""
 yt_flag = False
 
 def send():
     msg = EntryBox.get("1.0", 'end-1c').strip()
     EntryBox.delete("0.0", END)
+    global Ciastr
     global count
     global name
+    global bspace
     if msg != '' and count == 0:
         ChatLog.config(state=NORMAL)
         ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
@@ -44,7 +46,7 @@ def send():
         ChatLog.yview(END)
         name = msg
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
-        cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
+        #cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
         count+= 1
         return
     #elif msg == ''
@@ -56,7 +58,8 @@ def send():
         ChatLog.insert(END,'\n ', "left")
         ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
         ChatLog.yview(END)
-        cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(msg,))
+        #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(msg,))
+        Ciastr+=bspace+"You: "+msg+"\n"
             # if 'Facts' in msg or 'facts' in msg or 'fact' in msg or 'Fact' in msg:
             #     from facts import facts_func
             #     fact = facts_func()
@@ -80,7 +83,8 @@ def send():
             err_msg = "Error: Progressive Stream Unavailable"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            Ciastr+=bspace+"Cia: "+quality+'\n'
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
@@ -96,15 +100,23 @@ def send():
             response = chat(msg)
             if response in bye_responses:
                 receive(response)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                Ciastr+=bspace+"Cia: "+response+'\n'
+                #Ciastr.rjust(15)
+                cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET Cia=CONCAT(Cia, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))  
                 exit()
             else:
                 receive(response)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                Ciastr+=bspace+"Cia: "+response+'\n'
+                #cursor.execute("INSERT INTO chathistory (Name,Cia) VALUES (%s,%s)",(name,Ciastr))
 
             
 
 def audiobuttonfunc():
+    global Ciastr
+    global bspace
     engine.say("Speak something...")
         # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[speak_msg,nm]) 
     engine.runAndWait() 
@@ -136,7 +148,8 @@ def audiobuttonfunc():
             err_msg = "Error: Progressive Stream Unavailable"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            Ciastr+=bspace+"Cia: "+quality+'\n'
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
@@ -154,15 +167,24 @@ def audiobuttonfunc():
                 engine.say(res)
                 engine.runAndWait()
                 receive(req2)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
-                cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                Ciastr+=bspace+"Cia: "+res+'\n'
+                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                Ciastr+=bspace+"You: "+req2+'\n'
+                #Ciastr.rjust(15)
+                cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET Cia=CONCAT(Cia, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
                 exit()
             else:
                 engine.say(res)
                 engine.runAndWait()
                 receive(req2)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
-                cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                Ciastr+=bspace+"Cia: "+res+'\n'
+                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                Ciastr+=bspace+"You: "+req2+'\n'
+                #Ciastr.rjust(15)
+                #cursor.execute("INSERT INTO chathistory (Name,Cia) VALUES (%s,%s)",(name,Ciastr))
             
 
     ChatLog.config(state=NORMAL)
@@ -220,7 +242,9 @@ def accept():
     return msg
 
 #function to receive the response from CIA and print it on screen
-def receive(response):        
+def receive(response):
+    global Ciastr
+    global bspace        
     ChatLog.insert(END, current_time+' ', ("small", "greycolour", "left"))
     ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
     wraplength=200, font=("Arial", 10, "bold"), bg="#DDDDDD", bd=4, justify="left"))
@@ -228,7 +252,8 @@ def receive(response):
     ChatLog.config(state=DISABLED)
     #ChatLog.insert(END, '\n ', "right")
     ChatLog.yview(END)
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(response,))
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(response,))
+    #Ciastr+=bspace+response+'\n'
 
 #Creating tkinter object
 base = Tk()
@@ -251,7 +276,7 @@ SendButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", h
                     command= send)
 
 # display of audio button
-photo = PhotoImage(file = r"E:\mini project\Gui files\favicon-32x32.png") 
+photo = PhotoImage(file = r"favicon-32x32.png") 
 AudioButton = Button(base, font=("Verdana",12,'bold'),
                     bd=0, fg='#ffffff', image = photo,
                     command = audiobuttonfunc)
@@ -272,7 +297,7 @@ AudioButton.place(x=332, y=451, height=50, width = 50)
 
 def chat(req):
 
-    f = open ('E:\mini project\Gui files\intents.json', "r") 
+    f = open ('intents.json', "r") 
     
     # Reading from file 
     data = json.loads(f.read())
@@ -285,12 +310,18 @@ def chat(req):
     return response
 
 def tic_tac_toe_mult():
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('3')")
+    global Ciastr
+    global bspace
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES ('3')")
+    Ciastr+=bspace+"Cia: "+'3'+'\n'
     from tic_tac_toe_mult2 import tttm
     tttm(cursor)
 
 def tic_tac_toe_with_cia():
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('2')")
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES ('2')")
+    global Ciastr
+    global bspace
+    Ciastr+=bspace+"Cia: "+'2'+'\n'
     from tic_tac_toe_with_cia2 import ttcwc
     flag = ttcwc(cursor)
     if flag:
@@ -301,7 +332,10 @@ def tic_tac_toe_with_cia():
 
 
 def stone_paper_scissors():
-    cursor.execute("INSERT INTO chathistory (Cia) VALUES ('1')")
+    global Ciastr
+    global bspace
+    #cursor.execute("INSERT INTO chathistory (Cia) VALUES ('1')")
+    Ciastr+=bspace+"Cia: "+'1'+'\n'
     from stone_paper_scissors2 import spsm
     spsm(cursor)
 
@@ -344,12 +378,13 @@ if __name__ == "__main__":
     # print(ask)
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[ask])
     # name = input()
-    
     count = 0
     namemsg="What is your name ?"
     welmsg="Welcome, I am Cia!"
     #print(welmsg)
     receive(welmsg)
+    #Ciastr+=bspace+welmsg+'\n'
+    #Ciastr+=bspace+namemsg+'\n'
     receive(namemsg)
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[welmsg])
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[namemsg])
