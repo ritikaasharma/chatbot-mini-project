@@ -38,7 +38,7 @@ def send():
     global bspace
     if msg != '' and count == 0:
         ChatLog.config(state=NORMAL)
-        ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+        ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
         wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
@@ -52,7 +52,7 @@ def send():
     #elif msg == ''
     elif msg != '':
         ChatLog.config(state=NORMAL)
-        ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+        ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
         wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
@@ -188,7 +188,7 @@ def audiobuttonfunc():
             
 
     ChatLog.config(state=NORMAL)
-    ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+    ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
     ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=res, 
     wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
     ChatLog.insert(END,'\n ', "left")
@@ -235,7 +235,7 @@ def accept():
 
     if msg != '':
         ChatLog.config(state=NORMAL)
-        ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+        ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
         wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
@@ -247,9 +247,9 @@ def accept():
 def receive(response):
     global Ciastr
     global bspace        
-    ChatLog.insert(END, current_time+' ', ("small", "greycolour", "left"))
+    ChatLog.insert(END, current_time+' ', ("small", "thistle", "left"))
     ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
-    wraplength=200, font=("Monserrat", 10, "bold"), bg="#DDDDDD", bd=4, justify="left"))
+    wraplength=200, font=("Monserrat", 10, "bold"), bg="gray87", bd=4, justify="left"))
     ChatLog.insert(END, '\n ', "right")
     ChatLog.config(state=DISABLED)
     #ChatLog.insert(END, '\n ', "right")
@@ -348,14 +348,14 @@ def games():
     receive(gamemsg_db)
     top = Toplevel()
     top.title("Game-Menu")
-    SendButton = Button(top, font=("Arial",12,'bold'), text="1", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+    SendButton = Button(top, font=("Montserrat",12,'bold'), text="1", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
                     command = stone_paper_scissors).pack()
-    SendButton = Button(top, font=("Arial",12,'bold'), text="2", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+    SendButton = Button(top, font=("Montserrat",12,'bold'), text="2", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
                     command= tic_tac_toe_with_cia).pack()
-    SendButton = Button(top, font=("Arial",12,'bold'), text="3", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+    SendButton = Button(top, font=("Montserrat",12,'bold'), text="3", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
                     command= tic_tac_toe_mult).pack()
     top.mainloop()
 
