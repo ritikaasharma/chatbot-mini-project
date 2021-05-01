@@ -3,7 +3,7 @@ import pyttsx3
 import speech_recognition as spr
 from googletrans import Translator
 from gtts import gTTS 
-from talkbot2 import User_name
+from talkbot3 import User_name
 import os 
 
 import tkinter
@@ -11,6 +11,7 @@ from tkinter import *
 from tkinter import simpledialog
 from datetime import datetime
 import textwrap
+from talkbot3 import Ciastr
 now = datetime.now()
 current_time = now.strftime("%D - %H:%M \n")
 user_lang = ''
@@ -78,7 +79,7 @@ def lang_translate(cursor):
         ChatLog.config(state=DISABLED)
         #ChatLog.insert(END, '\n ', "right")
         ChatLog.yview(END)
-        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(response,))
+        ##cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(response,))
 
     def accept(response): #to print source and desination as users msgs       
         ChatLog.config(state=NORMAL)
@@ -90,6 +91,7 @@ def lang_translate(cursor):
         ChatLog.yview(END)
 
     def text_translator():
+        global Ciastr
         #("Language", " : ", "Code") 
         for x in languages: 
             pattern = x + " : " + languages[x]  
@@ -98,27 +100,36 @@ def lang_translate(cursor):
         translator = Translator()
         
         receive(select_msg) 
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(select_msg,))
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(select_msg,))
+        Ciastr+="Cia: "+select_msg+'\n'
         receive(source_db)
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(source_db,))
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(source_db,))
+        Ciastr+="Cia: "+source_db+'\n'
         user_lang = simpledialog.askstring("Input", "Source:",parent=top)
-        cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_lang,))
+        #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_lang,))
+        Ciastr+="You: "+user_lang+'\n'
         accept(user_lang)
         receive(dest_db)
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(dest_db,))
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(dest_db,))
+        Ciastr+="Cia: "+dest_db+'\n'
         op_lang = simpledialog.askstring("Input", "Destination:",parent=top)
-        cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(op_lang,))
+        #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(op_lang,))
+        Ciastr+="You: "+op_lang+'\n'
         accept(op_lang)
         receive(choice_db)
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(choice_db,))
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(choice_db,))
+        Ciastr+="Cia: "+choice_db+'\n'
         user_ip = simpledialog.askstring("Input", "Enter the sentence to be translate:",parent=top)
-        cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_ip,))
+        #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_ip,))
+        Ciastr+="You: "+user_ip+'\n'
         accept(user_ip)
 
         result = translator.translate(user_ip , src=user_lang, dest=op_lang)
         op_lang_db = "Your sentence in selected language is:"
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
-        cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(result.text.encode("utf-8"),))
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
+        Ciastr+="Cia: "+op_lang_db+'\n'
+        #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(result.text.encode("utf-8"),))
+        Ciastr+="Cia: "+result.text.encode("utf-8")+'\n'
         end_msg = "Your sentence in "+ op_lang + " is:" + result.text
         receive(end_msg)
     
@@ -134,6 +145,7 @@ def lang_translate(cursor):
 
 
     def speech_translate():
+        global Ciastr
         # languages = {"English": 'en', "French": 'fr', 
         #                 "Spanish": 'es', "German": 'de', "Italian": 'it', 
         #                 "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
@@ -160,7 +172,8 @@ def lang_translate(cursor):
             
         with mc as source:
             which_langmsg = "Which language would you like to convert in?" 
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(which_langmsg,User_name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(which_langmsg,User_name))
+            Ciastr+="Cia: "+which_langmsg+'\n'
             engine.say(which_langmsg)
             receive(which_langmsg)
             engine.runAndWait()
@@ -169,17 +182,20 @@ def lang_translate(cursor):
             recog1.adjust_for_ambient_noise(source, duration=0.2)
             to_lang = recog1.listen(source)
             to_lang1 = recog1.recognize_google(to_lang)
-            cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(to_lang1,User_name))
+            #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(to_lang1,User_name))
+            Ciastr+="You: "+to_lang1+'\n'
             accept(to_lang1)
             choose_db = "You want to translate in " + to_lang1
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(choose_db,User_name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(choose_db,User_name))
+            Ciastr+="Cia: "+choose_db+'\n'
             #print(choose_db + to_lang1)
             engine.say(choose_db)
             receive(choose_db)
             engine.runAndWait()
                 
             speak_db = "Speak a sentence..."    
-            cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(speak_db,User_name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(speak_db,User_name))
+            Ciastr+="Cia: "+speak_db+'\n'
             engine.say(speak_db) 
             receive(speak_db)
             engine.runAndWait()
@@ -201,8 +217,10 @@ def lang_translate(cursor):
                 tbt_db = "Phase to be Translated : "
                 tbt = tbt_db + get_sentence 
                 receive(tbt)
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(tbt_db,User_name))
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(get_sentence,User_name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(tbt_db,User_name))
+                Ciastr+="Cia: "+tbt_db+'\n'
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(get_sentence,User_name))
+                Ciastr+="Cia: "+get_sentence+'\n'
                     # Using translate() method which requires 
                     # three arguments, 1st the sentence which 
                     # needs to be translated 2nd source language 
@@ -214,10 +232,12 @@ def lang_translate(cursor):
                     # Storing the translated text in text 
                     # variable 
                 text = text_to_translate.text 
-                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(text,User_name))
+                ##cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(text,User_name))
                 op_lang_db = "Your sentence in selected language is:"
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(text.encode("utf-8"),))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
+                Ciastr+="Cia: "+op_lang_db+'\n'
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(text.encode("utf-8"),))
+                Ciastr+="Cia: "+text.encode("utf-8")+'\n'
                 end_msg = "Your sentence in "+ to_lang1 + " is:" + text
                 receive(end_msg)
                     # Using Google-Text-to-Speech ie, gTTS() method 
@@ -239,13 +259,15 @@ def lang_translate(cursor):
                 # provide better service to the user. 
             except spr.UnknownValueError: 
                 unk_err_db = "Unable to Understand the Input"
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(unk_err_db,User_name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(unk_err_db,User_name))
+                Ciastr+="Cia: "+unk_err_db+'\n'
                 #print(unk_err_db) 
                 receive(unk_err_db)
                     
             except spr.RequestError as e: 
                 req_err_db = "Unable to provide Required Output"
-                cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req_err_db,User_name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req_err_db,User_name))
+                Ciastr+="Cia: "+req_err_db+'\n'
                 #print("Unable to provide Required Output".format(e))     
                 receive(req_err_db)
 
