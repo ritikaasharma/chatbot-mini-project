@@ -347,16 +347,21 @@ def games():
     #print("Cia: "+ gamemsg)
     receive(gamemsg_db)
     top = Toplevel()
+    top.geometry("150x310")
     top.title("Game-Menu")
-    SendButton = Button(top, font=("Montserrat",12,'bold'), text="1", width="12", height=5,
-                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
-                    command = stone_paper_scissors).pack()
-    SendButton = Button(top, font=("Montserrat",12,'bold'), text="2", width="12", height=5,
-                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
-                    command= tic_tac_toe_with_cia).pack()
-    SendButton = Button(top, font=("Montserrat",12,'bold'), text="3", width="12", height=5,
-                    bd=0, bg="medium purple", activebackground="gray71",fg='#ffffff',
-                    command= tic_tac_toe_mult).pack()
+    SendButton1 = Button(top, font=("Montserrat",22,'bold'), text="1", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="medium purple",fg='#ffffff',
+                    command = stone_paper_scissors)
+    SendButton2 = Button(top, font=("Montserrat",22,'bold'), text="2", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="medium purple",fg='#ffffff',
+                    command= tic_tac_toe_with_cia)
+    SendButton3 = Button(top, font=("Montserrat",22,'bold'), text="3", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="medium purple",fg='#ffffff',
+                    command= tic_tac_toe_mult)
+
+    SendButton1.place(x=0,y=0,height = 100, width = 150)
+    SendButton2.place(x=0,y=105,height = 100, width = 150)
+    SendButton3.place(x=0,y=210,height = 100, width = 150)
     top.mainloop()
 
 # bye_msg = "Bye, have a great day!"
