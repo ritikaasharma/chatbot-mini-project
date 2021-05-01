@@ -3,7 +3,7 @@ import pyttsx3
 import speech_recognition as spr
 from googletrans import Translator
 from gtts import gTTS 
-from talkbot3 import User_name
+#from talkbot2 import User_name
 import os 
 
 import tkinter
@@ -11,7 +11,6 @@ from tkinter import *
 from tkinter import simpledialog
 from datetime import datetime
 import textwrap
-from talkbot3 import Ciastr
 now = datetime.now()
 current_time = now.strftime("%D - %H:%M \n")
 user_lang = ''
@@ -24,11 +23,11 @@ def lang_translate(cursor):
 
     top = Toplevel()
     top.title("Language translator")
-    top.geometry("400x500")
+    top.geometry("400x450")
     #top.resizable(width=FALSE, height=FALSE)
 
     #Create Chat window
-    ChatLog = Text(top, bd=0, bg="white", height="8", width="50", font="Arial",)
+    ChatLog = Text(top, bd=0, bg="gray71", height="8", width="50", font="Monserrat",)
 
     ChatLog.config(state=DISABLED)
 
@@ -40,14 +39,16 @@ def lang_translate(cursor):
     
 
     #Create the box to enter message
-    EntryBox = Text(top, bd=0, bg="white",width="29", height="5", font="Arial")
+    EntryBox = Text(top, bd=0, bg="gray81",width="29", height="5", font="Monserrat")
 
     #drop1 = OptionMenu(top, user_lang, *languages)
 
 
-    scrollbar.place(x=376,y=6, height=386)
+    scrollbar.place(x=376,y=6, height=438)
     ChatLog.place(x=6,y=6, height=436, width=370)
-    EntryBox.place(x=6, y=451, height=50, width=250)
+    #EntryBox.place(x=6, y=451, height=40, width=250)
+    
+
     
     #drop1.place(x=6,y=56, height=50,width = 150)
 
@@ -64,17 +65,17 @@ def lang_translate(cursor):
 
         if msg != '':
             ChatLog.config(state=NORMAL)
-            ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+            ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
             ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
-            wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+            wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
             ChatLog.insert(END,'\n ', "left")
-            ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+            ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
             ChatLog.yview(END)
 
     def receive(response):        
-        ChatLog.insert(END, current_time+' ', ("small", "greycolour", "left"))
+        ChatLog.insert(END, current_time+' ', ("small", "thistle", "left"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
-        wraplength=200, font=("Arial", 10, "bold"), bg="#DDDDDD", bd=4, justify="left"))
+        wraplength=200, font=("Monserrat", 10, "bold"), bg="gray87", bd=4, justify="left"))
         ChatLog.insert(END, '\n ', "right")
         ChatLog.config(state=DISABLED)
         #ChatLog.insert(END, '\n ', "right")
@@ -83,15 +84,14 @@ def lang_translate(cursor):
 
     def accept(response): #to print source and desination as users msgs       
         ChatLog.config(state=NORMAL)
-        ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
+        ChatLog.insert(END, current_time+' ', ("small", "right", "thistle"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
-        wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+        wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
-        ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+        ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
         ChatLog.yview(END)
 
     def text_translator():
-        global Ciastr
         #("Language", " : ", "Code") 
         for x in languages: 
             pattern = x + " : " + languages[x]  
@@ -101,42 +101,33 @@ def lang_translate(cursor):
         
         receive(select_msg) 
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(select_msg,))
-        Ciastr+="Cia: "+select_msg+'\n'
         receive(source_db)
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(source_db,))
-        Ciastr+="Cia: "+source_db+'\n'
         user_lang = simpledialog.askstring("Input", "Source:",parent=top)
         #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_lang,))
-        Ciastr+="You: "+user_lang+'\n'
         accept(user_lang)
         receive(dest_db)
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(dest_db,))
-        Ciastr+="Cia: "+dest_db+'\n'
         op_lang = simpledialog.askstring("Input", "Destination:",parent=top)
         #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(op_lang,))
-        Ciastr+="You: "+op_lang+'\n'
         accept(op_lang)
         receive(choice_db)
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(choice_db,))
-        Ciastr+="Cia: "+choice_db+'\n'
         user_ip = simpledialog.askstring("Input", "Enter the sentence to be translate:",parent=top)
         #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(user_ip,))
-        Ciastr+="You: "+user_ip+'\n'
         accept(user_ip)
 
         result = translator.translate(user_ip , src=user_lang, dest=op_lang)
         op_lang_db = "Your sentence in selected language is:"
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
-        Ciastr+="Cia: "+op_lang_db+'\n'
         #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(result.text.encode("utf-8"),))
-        Ciastr+="Cia: "+result.text.encode("utf-8")+'\n'
         end_msg = "Your sentence in "+ op_lang + " is:" + result.text
         receive(end_msg)
     
-    SendButton = Button(top, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
-                        bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
-                        command= send)
-    SendButton.place(x=262, y=451, height=50, width = 70)
+    SendButton = Button(top, font=("Arial",12,'bold'), text="Send", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="medium purple",fg='#ffffff',
+                    command= send)
+    #SendButton.place(x=262, y=451, height=40, width = 70)
     
     #cursor = db.cursor()
         
@@ -145,7 +136,6 @@ def lang_translate(cursor):
 
 
     def speech_translate():
-        global Ciastr
         # languages = {"English": 'en', "French": 'fr', 
         #                 "Spanish": 'es', "German": 'de', "Italian": 'it', 
         #                 "Hindi": 'hi', "Marathi": 'mr', "Bengali":'bn', "Chinese(simplified)": 'zh-cn', 
@@ -173,7 +163,6 @@ def lang_translate(cursor):
         with mc as source:
             which_langmsg = "Which language would you like to convert in?" 
             #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(which_langmsg,User_name))
-            Ciastr+="Cia: "+which_langmsg+'\n'
             engine.say(which_langmsg)
             receive(which_langmsg)
             engine.runAndWait()
@@ -183,11 +172,9 @@ def lang_translate(cursor):
             to_lang = recog1.listen(source)
             to_lang1 = recog1.recognize_google(to_lang)
             #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(to_lang1,User_name))
-            Ciastr+="You: "+to_lang1+'\n'
             accept(to_lang1)
             choose_db = "You want to translate in " + to_lang1
             #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(choose_db,User_name))
-            Ciastr+="Cia: "+choose_db+'\n'
             #print(choose_db + to_lang1)
             engine.say(choose_db)
             receive(choose_db)
@@ -195,7 +182,6 @@ def lang_translate(cursor):
                 
             speak_db = "Speak a sentence..."    
             #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(speak_db,User_name))
-            Ciastr+="Cia: "+speak_db+'\n'
             engine.say(speak_db) 
             receive(speak_db)
             engine.runAndWait()
@@ -218,9 +204,7 @@ def lang_translate(cursor):
                 tbt = tbt_db + get_sentence 
                 receive(tbt)
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(tbt_db,User_name))
-                Ciastr+="Cia: "+tbt_db+'\n'
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(get_sentence,User_name))
-                Ciastr+="Cia: "+get_sentence+'\n'
                     # Using translate() method which requires 
                     # three arguments, 1st the sentence which 
                     # needs to be translated 2nd source language 
@@ -235,9 +219,7 @@ def lang_translate(cursor):
                 ##cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(text,User_name))
                 op_lang_db = "Your sentence in selected language is:"
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(op_lang_db,))
-                Ciastr+="Cia: "+op_lang_db+'\n'
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",(text.encode("utf-8"),))
-                Ciastr+="Cia: "+text.encode("utf-8")+'\n'
                 end_msg = "Your sentence in "+ to_lang1 + " is:" + text
                 receive(end_msg)
                     # Using Google-Text-to-Speech ie, gTTS() method 
@@ -260,14 +242,12 @@ def lang_translate(cursor):
             except spr.UnknownValueError: 
                 unk_err_db = "Unable to Understand the Input"
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(unk_err_db,User_name))
-                Ciastr+="Cia: "+unk_err_db+'\n'
                 #print(unk_err_db) 
                 receive(unk_err_db)
                     
             except spr.RequestError as e: 
                 req_err_db = "Unable to provide Required Output"
                 #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req_err_db,User_name))
-                Ciastr+="Cia: "+req_err_db+'\n'
                 #print("Unable to provide Required Output".format(e))     
                 receive(req_err_db)
 
