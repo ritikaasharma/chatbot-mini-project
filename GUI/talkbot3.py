@@ -40,9 +40,9 @@ def send():
         ChatLog.config(state=NORMAL)
         ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
-        wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+        wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
-        ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+        ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
         ChatLog.yview(END)
         name = msg
         cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
@@ -54,9 +54,9 @@ def send():
         ChatLog.config(state=NORMAL)
         ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
-        wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+        wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
-        ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+        ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
         ChatLog.yview(END)
         #cursor.execute("INSERT INTO chathistory (User) VALUES (%s)",(msg,))
         Ciastr+=bspace+"You: "+msg+"\n"
@@ -190,9 +190,9 @@ def audiobuttonfunc():
     ChatLog.config(state=NORMAL)
     ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
     ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=res, 
-    wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+    wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
     ChatLog.insert(END,'\n ', "left")
-    ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+    ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
     ChatLog.yview(END)
 
     
@@ -237,9 +237,9 @@ def accept():
         ChatLog.config(state=NORMAL)
         ChatLog.insert(END, current_time+' ', ("small", "right", "greycolour"))
         ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=msg, 
-        wraplength=200, font=("Arial", 10, "bold"), bg="skyblue", bd=4, justify="left"))
+        wraplength=200, font=("Monserrat", 10, "bold"), bg="medium purple", bd=4, justify="left"))
         ChatLog.insert(END,'\n ', "left")
-        ChatLog.config(foreground="#0000CC", font=("Helvetica", 9))
+        ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
         ChatLog.yview(END)
     return msg
 
@@ -249,7 +249,7 @@ def receive(response):
     global bspace        
     ChatLog.insert(END, current_time+' ', ("small", "greycolour", "left"))
     ChatLog.window_create(END, window=Label(ChatLog, fg="#000000", text=response, 
-    wraplength=200, font=("Arial", 10, "bold"), bg="#DDDDDD", bd=4, justify="left"))
+    wraplength=200, font=("Monserrat", 10, "bold"), bg="#DDDDDD", bd=4, justify="left"))
     ChatLog.insert(END, '\n ', "right")
     ChatLog.config(state=DISABLED)
     #ChatLog.insert(END, '\n ', "right")
@@ -259,12 +259,12 @@ def receive(response):
 
 #Creating tkinter object
 base = Tk()
-base.title("Hello")
+base.title("TalkBot")
 base.geometry("400x500")
 base.resizable(width=FALSE, height=FALSE)
 base.bind('<Return>', send)
 #Create Chat window
-ChatLog = Text(base, bd=0, bg="white", height="8", width="50", font="Arial",)
+ChatLog = Text(base, bd=0, bg="gray71", height="8", width="50", font="Monserrat",)
 
 #ChatLog.config(state=DISABLED)
 
@@ -273,33 +273,33 @@ scrollbar = Scrollbar(base, command=ChatLog.yview)
 ChatLog['yscrollcommand'] = scrollbar.set
 
 #Create Button to send message
-SendButton = Button(base, font=("Verdana",12,'bold'), text="Send", width="12", height=5,
-                    bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
+SendButton = Button(base, font=("Arial",12,'bold'), text="Send", width="12", height=5,
+                    bd=0, bg="medium purple", activebackground="medium purple",fg='#ffffff',
                     command= send)
 
 # display of audio button
-photo = PhotoImage(file = r"favicon-32x32.png") 
-AudioButton = Button(base, font=("Verdana",12,'bold'),
+photo = PhotoImage(file = r"E:\mini project\Gui files\favicon-32x32.png") 
+AudioButton = Button(base, font=("Monserrat",12,'bold'),
                     bd=0, fg='#ffffff', image = photo,
                     command = audiobuttonfunc)
 
 
 #Create the box to enter message
-EntryBox = Text(base, bd=0, bg="white",width="29", height="5", font="Arial")
+EntryBox = Text(base, bd=0, bg="gray81",width="29", height="5", font="Monserrat")
 #EntryBox.bind("<Return>", send)
 
 
 #Place all components on the screen
-scrollbar.place(x=376,y=6, height=386)
+scrollbar.place(x=376,y=6, height=438)
 ChatLog.place(x=6,y=6, height=436, width=370)
-EntryBox.place(x=6, y=451, height=50, width=250)
-SendButton.place(x=262, y=451, height=50, width = 70)
-AudioButton.place(x=332, y=451, height=50, width = 50)
+EntryBox.place(x=6, y=451, height=40, width=250)
+SendButton.place(x=262, y=451, height=40, width = 70)
+AudioButton.place(x=332, y=451, height=40, width = 50)
 
 
 def chat(req):
 
-    f = open ('intents.json', "r") 
+    f = open ('E:\mini project\Gui files\intents.json', "r") 
     
     # Reading from file 
     data = json.loads(f.read())
@@ -348,13 +348,13 @@ def games():
     receive(gamemsg_db)
     top = Toplevel()
     top.title("Game-Menu")
-    SendButton = Button(top, font=("Verdana",12,'bold'), text="1", width="12", height=5,
+    SendButton = Button(top, font=("Arial",12,'bold'), text="1", width="12", height=5,
                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
                     command = stone_paper_scissors).pack()
-    SendButton = Button(top, font=("Verdana",12,'bold'), text="2", width="12", height=5,
+    SendButton = Button(top, font=("Arial",12,'bold'), text="2", width="12", height=5,
                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
                     command= tic_tac_toe_with_cia).pack()
-    SendButton = Button(top, font=("Verdana",12,'bold'), text="3", width="12", height=5,
+    SendButton = Button(top, font=("Arial",12,'bold'), text="3", width="12", height=5,
                     bd=0, bg="#32de97", activebackground="#3c9d9b",fg='#ffffff',
                     command= tic_tac_toe_mult).pack()
     top.mainloop()
