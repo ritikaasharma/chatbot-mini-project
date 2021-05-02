@@ -1,6 +1,7 @@
 import logging
 import time
 
+from tabulate import tabulate
 import speech_recognition as sr
 import pyttsx3
 
@@ -9,6 +10,7 @@ import random
 import re 
 import tkinter
 from tkinter import *
+from tkinter import messagebox
 from datetime import datetime
 from tkinter import simpledialog
 import textwrap
@@ -24,8 +26,8 @@ bspace="               "
 cursor = db.cursor()
 db.autocommit(True)
 name_of_talkbot = "Cia"
-cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (Name varchar(255) NOT NULL DEFAULT ' ', Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0)")
-cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Name varchar(255) UNIQUE DEFAULT ' ', Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, History varchar(13000) DEFAULT '')")
+cursor.execute("CREATE TABLE IF NOT EXISTS chathistory (Username char(50) NOT NULL PRIMARY KEY, Frequency int DEFAULT 0,  Date_and_Time timestamp DEFAULT current_timestamp ON UPDATE current_timestamp, History varchar(13000) DEFAULT '')") 
+cursor.execute("CREATE TABLE IF NOT EXISTS scoreboard (accgames_id int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT, Username char(50), Stone_Paper_Scissors int DEFAULT 0, Tic_Tac_Toe_Single int DEFAULT 0, Tic_Tac_Toe_Multi int DEFAULT 0, Frequency int DEFAULT 0,Total_wins int DEFAULT 0, FOREIGN KEY (Username) REFERENCES chathistory(Username))")
 Ciastr = ""
 yt_flag = False
 
@@ -45,8 +47,17 @@ def send():
         ChatLog.config(foreground="#0000CC", font=("Monserrat", 9))
         ChatLog.yview(END)
         name = msg
-        cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(name,name))
-        cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
+        cursor.execute("SELECT Username FROM chathistory")
+        records = cursor.fetchall()
+        record_new=[]
+        for record in records:
+            record_new.append(record)
+        if name not in record_new:
+            cursor.execute("INSERT IGNORE INTO chathistory (Username) VALUES (%s)",(name,))    
+            cursor.execute("INSERT INTO scoreboard (Username) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(name,name))
+        else:
+            err_msg2="Please enter a unique username"
+            receive(err_msg2)            
         count+= 1
         return
     #elif msg == ''
@@ -63,7 +74,7 @@ def send():
             # if 'Facts' in msg or 'facts' in msg or 'fact' in msg or 'Fact' in msg:
             #     from facts import facts_func
             #     fact = facts_func()
-            #     cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(fact,name))
+            #     cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(fact,name))
             #     cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             #     print("Cia: "+fact)
 
@@ -85,13 +96,13 @@ def send():
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
             svd="Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(quality,name))
             Ciastr+=bspace+"Cia: "+lvd+'\n'
             Ciastr+=bspace+"You: "+link+'\n'
             Ciastr+=bspace+"Cia: "+svd+'\n'
             Ciastr+=bspace+"You: "+quality+'\n'
             vd=int(quality)
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Username =%s",(name,))
             global yt_flag
             yt_flag = ytfunc(cursor,link,name,vd)
             if yt_flag:
@@ -100,23 +111,30 @@ def send():
                 receive(dc_db)
                 return
             receive(err_msg)
+        elif "score" in msg or "scoreboard" in msg:
+            cursor.execute("SELECT * FROM scoreboard WHERE Username=%s",(name,))
+            records = cursor.fetchall()
             
+            receive(print(tabulate(records, headers=['accgames_id', 'Username', 'Stone_Paper_Scissors', 'Tic_Tac_Toe_Single', 'Tic_Tac_Toe_Multi', 'Frequency', 'Total_wins'], tablefmt='psql')))
+
         else:
             bye_responses = ["Bye", "Have a great day", "See you soon", "Take care", "See you"]
             response = chat(msg)
             if response in bye_responses:
                 receive(response)
-                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(response, name))
                 Ciastr+=bspace+"Cia: "+response+'\n'
                 #Ciastr.rjust(15)
-                # cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
-                cursor.execute("UPDATE chathistory SET History=CONCAT(History, %s) WHERE Name=%s",(Ciastr,name))  
+                # cursor.execute("INSERT IGNORE INTO chathistory (Username) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET History=CONCAT(History, %s) WHERE Username=%s",(Ciastr,name))  
                 exit()
             else:
+
                 receive(response)
-                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(response, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(response, name))
                 Ciastr+=bspace+"Cia: "+response+'\n'
                 #cursor.execute("INSERT INTO chathistory (Name,Cia) VALUES (%s,%s)",(name,Ciastr))
+
 
             
 
@@ -124,7 +142,7 @@ def audiobuttonfunc():
     global Ciastr
     global bspace
     engine.say("Speak something...")
-        # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[speak_msg,nm]) 
+        # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",[speak_msg,nm]) 
     engine.runAndWait() 
     with sr.Microphone() as source:
             #r.adjust_for_ambient_noise(source, duration=0.2)
@@ -134,19 +152,19 @@ def audiobuttonfunc():
         #     ask_db = "Your response: "
         #         # using google speech recognition
         #     receive(ask_db + r.recognize_google(req))
-        #         # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
+        #         # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",[ask_db,nm])
         # except:
         #     sry_msg = "Sorry, I did not get that"
         #     receive(sry_msg)
         if 'games' in req2 or 'Games' in req2 or 'game' in req2:
             games()
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Username =%s",(name,))
 
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
             #print("Cia: ")
             from langtranslate2 import lang_translate
             lang_translate(cursor, name)
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Username =%s",(name,))
 
         elif 'YouTube' in req2 or 'Download' in req2 or 'youtube' in req2 or 'download a youtube video' in req2:
             from ytdownloader2 import ytfunc
@@ -156,13 +174,13 @@ def audiobuttonfunc():
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
             svd="Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
-            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
+            #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(quality,name))
             Ciastr+=bspace+"Cia: "+lvd+'\n'
             Ciastr+=bspace+"You: "+link+'\n'
             Ciastr+=bspace+"Cia: "+svd+'\n'
             Ciastr+=bspace+"You: "+quality+'\n'
             vd=int(quality)
-            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
+            cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Username =%s",(name,))
             global yt_flag
             yt_flag = ytfunc(cursor,link,name,vd)
             if yt_flag:
@@ -179,21 +197,21 @@ def audiobuttonfunc():
                 engine.say(res)
                 engine.runAndWait()
                 receive(req2)
-                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(res, name))
                 Ciastr+=bspace+"Cia: "+res+'\n'
-                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(req2, name))
                 Ciastr+=bspace+"You: "+req2+'\n'
                 #Ciastr.rjust(15)
-                # cursor.execute("INSERT IGNORE INTO chathistory (Name) VALUES (%s)",(name,))
-                cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
+                # cursor.execute("INSERT IGNORE INTO chathistory (Username) VALUES (%s)",(name,))
+                cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Username=%s",(Ciastr,name))
                 exit()
             else:
                 engine.say(res)
                 engine.runAndWait()
                 receive(req2)
-                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(res, name))
+                #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(res, name))
                 Ciastr+=bspace+"Cia: "+res+'\n'
-                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(req2, name))
+                #cursor.execute("INSERT INTO chathistory (User) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(req2, name))
                 Ciastr+=bspace+"You: "+req2+'\n'
                 #Ciastr.rjust(15)
                 #cursor.execute("INSERT INTO chathistory (Name,Cia) VALUES (%s,%s)",(name,Ciastr))
@@ -217,27 +235,27 @@ def audio():
     with sr.Microphone() as source0:
         #r.adjust_for_ambient_noise(source, duration=0.2)
         name=r.listen(source0)
-        nm=r.recognize_google(name)
+        nm=r.recognize_google(Username)
         # User_name = nm
-        # cursor.execute("INSERT INTO scoreboard (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
-        # cursor.execute("INSERT INTO chathistory (Name) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(nm,nm))
+        # cursor.execute("INSERT INTO scoreboard (Username) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(nm,nm))
+        # cursor.execute("INSERT INTO chathistory (Username) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",(nm,nm))
         # try:
         #     # using google speech recognition
         #     ask_db = "Your response: "
-        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[ask_db,nm])
-        #     receive(ask_db +r.recognize_google(name))
+        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",[ask_db,nm])
+        #     receive(ask_db +r.recognize_google(Username))
         # except:
         #     sry_msg = "Sorry, I did not get that"
-        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[sry_msg,nm])
+        #     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",[sry_msg,nm])
         #     receive(sry_msg)
     
     help_db = "Hey how can I help you ?"
-    # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",[help_db,nm])
+    # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Username=%s",[help_db,nm])
     tmsg="Hey"+nm+"How can I help you ?"  
     Ciastr = "Cia: " + tmsg + "\n"
     engine.say(tmsg)
     receive(tmsg)
-    cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,nm))
+    cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Username=%s",(Ciastr,nm))
     engine.runAndWait() 
          
 
@@ -339,10 +357,13 @@ def tic_tac_toe_with_cia():
     from tic_tac_toe_with_cia2 import ttcwc
     flag = ttcwc(cursor)
     if flag:
-        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name=%s",(name,))
-        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name=%s",(name,))
-    cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Name = 'Cia'")
-    cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Name= 'Cia'")
+        cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Username=%s",(name,))
+        cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Username=%s",(name,))
+    cursor.execute("UPDATE scoreboard SET Tic_Tac_Toe_Single = Tic_Tac_Toe_Single+1 WHERE Username = 'Cia'")
+    cursor.execute("UPDATE scoreboard SET Total_wins = Total_wins+1 WHERE Userame= 'Cia'")
+
+def kadak(Cia_temp):
+    Ciastr+=Cia_temp
 
 
 def stone_paper_scissors():
@@ -352,10 +373,17 @@ def stone_paper_scissors():
     Ciastr+=bspace+"Cia: "+'1'+'\n'
     from stone_paper_scissors2 import spsm
     spsm(cursor)
+    from stone_paper_scissors2 import Ciastr_sps
+    Ciastr+=Ciastr_sps
+    print(Ciastr_sps)
+    #cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Username=%s",(Ciastr_sps,name))
+    
 
-def games(): 
+def games():
+    global Ciastr 
     gamemsg = "What would you like to play?\n1. Stone Paper Scissors\n2. Tic-Tac-Toe-With-Cia\n3. Tic-Tac-Toe-Mult"
-    gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe 3. Tic-Tac-Toe-Mult" 
+    gamemsg_db = "What would you like to play? 1. Stone Paper Scissors 2. Tic-Tac-Toe 3. Tic-Tac-Toe-Mult"
+    Ciastr+=bspace+"Cia: "+gamemsg_db+'\n' 
     #print("Cia: "+ gamemsg)
     receive(gamemsg_db)
     top = Toplevel()
@@ -398,7 +426,7 @@ if __name__ == "__main__":
     # cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s)",[ask])
     # name = input()
     count = 0
-    namemsg="What is your name ?"
+    namemsg="Enter a unique username: "
     welmsg="Welcome, I am Cia!"
     #print(welmsg)
     receive(welmsg)
@@ -422,7 +450,7 @@ if __name__ == "__main__":
         engine.say(namemsg)
         receive(namemsg)
         engine.runAndWait()
-        # cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Name=%s",(Ciastr,name))
+        # cursor.execute("UPDATE chathistory SET History=CONCAT(History, CHAR(10), %s) WHERE Username=%s",(Ciastr,name))
         audio()
 
     #cursor.execute("ALTER table scoreboard ORDER BY Total_wins DESC")
