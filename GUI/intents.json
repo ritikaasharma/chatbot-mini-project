@@ -1,32 +1,44 @@
 {"intents": [
         {"tag": "greeting",
-         "patterns": ["Hi there", "Is anyone there?","Hey","Hola", "Hello", "Good day", "Hey there","Hi"],
-         "responses": ["Hello", "Good to see you again", "Hi there, how can I help?"]
+         "patterns": ["Hi there", "Is anyone there?","Hey","Hola", "Hello", "Good day", "Hey there","Hi", "Hi sia", "Hey sia", "Yo sia", "Good morning", "Good evening"],
+         "responses": ["Hello", "Good to see you again", "Hi there, how can I help?", "Namaste", "Hey! How are you?"]
         },
         {"tag": "bye",
-        "patterns": ["Goodbye", "Bye","Talk to you later","Bbye", "Tata", "Toodles", "Will meet you soon"],
-        "responses": ["Bye", "Have a great day", "See you soon"]
+        "patterns": ["Goodbye", "Bye", "Talk to you later","Bbye", "Tata", "Toodles", "Will meet you soon", "Got to go", "Gotta leave", "See you", "I'll talk to you later"],
+        "responses": ["Bye", "Have a great day", "See you soon", "Take care", "See you"]
         },
         {
         "tag": "haalchal",
-        "patterns": ["How are you", "What's up", "How are you doing"],
-        "responses": ["I am doing great", "Great! How are you?"]
+        "patterns": ["How are you", "What's up", "How are you doing", "How have you been", "And you", "How are you cia", "how are you siya"],
+        "responses": ["I am doing great", "Great! How are you?", "Good, and you?"]
+        },
+        {"tag": "yes",
+        "patterns": ["Yes", "Yeah", "Ya", "Yup"],
+        "responses": ["I know", "Well", "Hmm", "Yes mate", "Awesome", "Brilliant", "Nice", "That's lovely", "Perfect", "Fantastic", "Okay", "Cheers"]
+        },
+        {"tag": "no",
+        "patterns":["Nope", "No", "No indeed", "Most certainly not", "I don't know"],
+        "responses": ["Oh, OK", "Ah!", "No problem"]
+        },
+        {"tag": "funny",
+        "patterns": ["Funny", "Haha", "Lol", "Lmao", "Rofl", "Hilarious"],
+        "responses": ["It is", "I know"]
         },
         
         {"tag": "thanks",
          "patterns": ["Thanks", "Thank you", "That's helpful", "Awesome, thanks", "Thanks for helping me", "Interesting"],
-         "responses": ["Happy to help!", "Any time!", "My pleasure"]
+         "responses": ["Happy to help!", "Any time!", "It's my pleasure", "Welcome", "You're welcome"]
         },
         {"tag": "noanswer",
          "patterns": [""],
          "responses": ["Sorry, can't understand you", "Please give me more info", "Not sure I understand"]
         },
         {"tag": "identity",
-         "patterns": ["Who are you", "What is your name", "Who made you"],
-         "responses": ["I am Cia, made by Ritika, Tanmay and Rohit."]
+         "patterns": ["Who are you", "What is your name", "Who made you", "Are you a human", "Are you a bot"],
+         "responses": ["I am Cia, a talkbot made by Ritika, Tanmay and Rohit."]
         },
         {"tag": "facts",
-         "patterns": ["Tell me a fact", "Show me a fact", "Interesting facts", "Fact", "Facts"],
+         "patterns": ["Tell me a fact", "Show me a fact", "Interesting facts", "Fact", "Facts", "Can you tell me a fact", "Tell a fact"],
          "responses": ["Sushruta was world's first surgeon",
                 "If a Polar Bear and a Grizzly Bear mate, their offspring is called a 'Pizzy Bear'.",
                 "Yoga has its origins in India and has existed for over 5,000 years.",
@@ -49,14 +61,17 @@
                 "Lettuce is a member of the sunflower family.",
                 "India never invaded any country in her last 100000 years of history."]
         },
-        {"tag": "happy",
-        "patterns": ["Good", "Happy", "Great"],
-        "responses": ["Good to hear that!", "That's great!"]
+        {"tag": "userhappy",
+        "patterns": ["Good", "Happy", "Great", "I'm good", "I am good", "I'm fine", "I am fine", "I am happy", "I'm happy", "Cool", "I am doing great"],
+        "responses": ["Good to hear that!", "That's great!", "That's good to know", "That's awesome", "Good for you!", "I'm glad to hear that", "I'm delighted", "Likewise", "i'm good, too"]
+        },
+        {"tag": "ciahappy",
+        "patterns": ["Are you happy?", "Are you doing good?", "How is your day going?"],
+        "responses": ["Talking to you makes me happy", "I am super happy, thanks for asking!"]
         },
         {"tag": "sad",
-        "patterns": ["Sad", "Bored", "Boring", "Unhappy", "Terrible"],
-        "responses": ["Hey, you can play some games!", "I can tell you some interesting facts", "You can talk to me"]
+        "patterns": ["Sad", "Bored", "Boring", "Unhappy", "Terrible", "I'm sad", "I'm unhappy", "I am sad", "I am unhappy", "I'm bored", "i am bored", "Sorrow", "Miserable"],
+        "responses": ["Hey, you can play some games!", "I can tell you some interesting facts", "You can talk to me", "How can I help you?", "What happened?", "Are you OK?", "Don't worry", "Stay positive", "Hang in there", "I'm sorry to hear that"]
         }
-
    ]
 }
