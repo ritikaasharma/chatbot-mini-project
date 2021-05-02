@@ -17,7 +17,7 @@ import MySQLdb
 db = MySQLdb.connect(
     host = "localhost",
     user = "root",
-    passwd = "@rasgulla15",
+    passwd = "tanmay1210",
     database = "chatbotdb"
     )
 bspace="               "
@@ -74,23 +74,29 @@ def send():
         elif 'Language' in msg or 'language' in msg or 'Translator' in msg or 'translator' in msg or 'Translate' in msg or 'translate' in msg:
             print("Cia: ")
             from langtranslate2 import lang_translate
-            lang_translate(cursor)
+            lang_translate(cursor, name)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
 
         elif 'YouTube' in msg or 'Download' in msg or 'youtube' in msg or 'download a youtube video' in msg:
             from ytdownloader2 import ytfunc
             #print("Cia: ",end="")
             err_msg = "Error: Progressive Stream Unavailable"
+            lvd="Enter the link of video to be downloaded :"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
+            svd="Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
             #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
-            Ciastr+=bspace+"Cia: "+quality+'\n'
+            Ciastr+=bspace+"Cia: "+lvd+'\n'
+            Ciastr+=bspace+"You: "+link+'\n'
+            Ciastr+=bspace+"Cia: "+svd+'\n'
+            Ciastr+=bspace+"You: "+quality+'\n'
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
             yt_flag = ytfunc(cursor,link,name,vd)
             if yt_flag:
                 dc_db = "Download Completed !"
+                Ciastr+=bspace+"Cia: "+dc_db+'\n'
                 receive(dc_db)
                 return
             receive(err_msg)
@@ -139,23 +145,29 @@ def audiobuttonfunc():
         elif 'Language' in req2 or 'language' in req2 or 'Translator' in req2 or 'translator' in req2 or 'Translate' in req2 or 'translate' in req2:
             #print("Cia: ")
             from langtranslate2 import lang_translate
-            lang_translate(cursor)
+            lang_translate(cursor, name)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
 
         elif 'YouTube' in req2 or 'Download' in req2 or 'youtube' in req2 or 'download a youtube video' in req2:
             from ytdownloader2 import ytfunc
             #print("Cia: ",end="")
             err_msg = "Error: Progressive Stream Unavailable"
+            lvd="Enter the link of video to be downloaded :"
             link = simpledialog.askstring("Input", "Enter the link of video to be downloaded :",parent=base)
+            svd="Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available"
             quality = simpledialog.askstring("Input","Select video quality : 1. Highest resolution available 2. 1080p 3. 720p 4. 480p 5. Lowest resolution available",parent=base)
             #cursor.execute("INSERT INTO chathistory (Cia) VALUES (%s) ON DUPLICATE KEY UPDATE Name=%s",(quality,name))
-            Ciastr+=bspace+"Cia: "+quality+'\n'
+            Ciastr+=bspace+"Cia: "+lvd+'\n'
+            Ciastr+=bspace+"You: "+link+'\n'
+            Ciastr+=bspace+"Cia: "+svd+'\n'
+            Ciastr+=bspace+"You: "+quality+'\n'
             vd=int(quality)
             cursor.execute("UPDATE chathistory SET Frequency = Frequency + 1 where Name =%s",(name,))
             global yt_flag
             yt_flag = ytfunc(cursor,link,name,vd)
             if yt_flag:
                 dc_db = "Download Completed !"
+                Ciastr+=bspace+"Cia: "+dc_db+'\n'
                 receive(dc_db)
                 return
             receive(err_msg)
@@ -278,7 +290,7 @@ SendButton = Button(base, font=("Arial",12,'bold'), text="Send", width="12", hei
                     command= send)
 
 # display of audio button
-photo = PhotoImage(file = r"E:\mini project\Gui files\favicon-32x32.png") 
+photo = PhotoImage(file = r"D:\Codes\Python codes\TalkBot3GUI\favicon-32x32.png") 
 AudioButton = Button(base, font=("Monserrat",12,'bold'),
                     bd=0, fg='#ffffff', image = photo,
                     command = audiobuttonfunc)
@@ -299,7 +311,7 @@ AudioButton.place(x=332, y=451, height=40, width = 50)
 
 def chat(req):
 
-    f = open ('E:\mini project\Gui files\intents.json', "r") 
+    f = open ('D:\Codes\Python codes\TalkBot3GUI\intents.json', "r") 
     
     # Reading from file 
     data = json.loads(f.read())
